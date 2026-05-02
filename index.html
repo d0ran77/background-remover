@@ -3,15 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LithoPrint Studio v2.0</title>
+    
+    <!-- SEO & Metadata -->
+    <title>LithoPrint Studio v3.2 | Pro Background Remover & Ink Density Tool</title>
+    <meta name="description" content="Professional-grade background removal and ink density optimization for T-shirt designers. Process batch PNGs for high-resolution print production with zero white fringe.">
+    <meta name="keywords" content="background remover, t-shirt printing, 300 DPI, ink density, black crush, batch png processing, stencil cleaner, DTG prep">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LithoPrint Studio v3.2 | Pro Background Remover">
+    <meta property="og:description" content="The ultimate utility for T-shirt printers. Kill white halos and optimize ink density for dark garment production.">
+    
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "LithoPrint Studio",
+      "operatingSystem": "Web",
+      "applicationCategory": "DesignSoftware",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Roboto+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap');
         
         :root {
-            --bg-primary: #050505;
-            --panel-bg: rgba(15, 15, 15, 0.98);
+            --bg-primary: #080808;
+            --panel-bg: rgba(12, 12, 12, 0.98);
             --accent: #ff0000;
+            --ui-border: #222;
         }
 
         body { 
@@ -33,6 +62,7 @@
         .white-shirt { background-color: #ffffff !important; background-image: none !important; }
         .black-shirt { background-color: #0d0d0d !important; background-image: none !important; }
         .green-screen { background-color: #00ff00 !important; background-image: none !important; }
+        .mockup-bg { background-size: cover; background-position: center; }
         
         /* UI Elements */
         input[type=range] { 
@@ -56,7 +86,21 @@
 
         .control-panel { 
             background: var(--panel-bg); 
-            border: 1px solid #222; 
+            border-right: 1px solid var(--ui-border); 
+        }
+
+        .btn-action { 
+            background: #1a1a1a; 
+            color: #fff; 
+            transition: all 0.1s ease; 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 700; 
+            border: 1px solid #333;
+        }
+
+        .btn-action:hover:not(:disabled) { 
+            background: var(--accent); 
+            border-color: var(--accent);
         }
 
         .btn-primary { 
@@ -71,253 +115,392 @@
             background: var(--accent); 
             color: #fff; 
         }
-        
+
+        /* Split Screen Slider */
+        #comparisonSlider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #fff;
+            cursor: ew-resize;
+            z-index: 50;
+            transform: translateX(-50%);
+        }
+        #comparisonSlider::after {
+            content: '↔';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            color: #000;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
         #canvasWrapper { 
             cursor: grab; 
-            transition: transform 0.05s linear; 
             display: inline-block; 
+            transform-origin: center center;
         }
         
         #canvasWrapper:active { cursor: grabbing; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .eyedropper-active { cursor: crosshair !important; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+        
+        .ad-space {
+            border: 1px solid #222;
+            background: #0a0a0a;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+        }
+
+        .page-hidden { display: none !important; }
     </style>
 </head>
-<body class="h-screen p-4 flex flex-col items-center justify-center">
-    <div class="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-6 h-[94vh]">
-        
-        <!-- Controls Side -->
-        <aside class="lg:col-span-4 flex flex-col gap-4 overflow-y-auto pr-2">
-            <header class="mb-2">
-                <h1 class="text-2xl font-black italic tracking-tighter text-white uppercase">LithoPrint Studio</h1>
-                <p class="text-[9px] text-zinc-500 uppercase tracking-[0.3em]">Precision Production // Litho v2.0</p>
+<body class="h-screen flex overflow-hidden">
+    
+    <!-- STUDIO VIEW -->
+    <div id="studioPage" class="w-full flex">
+        <aside class="control-panel w-96 flex flex-col h-screen p-6 overflow-y-auto shrink-0 z-20">
+            <header class="mb-6">
+                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">LithoPrint Studio</h1>
+                <p class="text-[9px] text-zinc-500 uppercase tracking-[0.3em]">Precision Production // v3.2 Pro</p>
             </header>
 
-            <div class="control-panel p-6 rounded-lg space-y-6">
-                <!-- Upload -->
-                <div>
-                    <input type="file" id="imageInput" accept="image/*" class="hidden">
-                    <button onclick="document.getElementById('imageInput').click()" 
-                        class="w-full py-3 border-2 border-dashed border-zinc-800 rounded hover:border-red-600 hover:bg-zinc-900 transition-all text-[10px] uppercase font-bold tracking-widest text-zinc-400">
-                        Import Source File
-                    </button>
+            <div class="space-y-3 mb-8">
+                <input type="file" id="imageInput" accept="image/*" multiple class="hidden">
+                <button onclick="document.getElementById('imageInput').click()" 
+                    class="w-full py-4 border-2 border-dashed border-zinc-800 rounded-lg hover:border-red-600 hover:bg-zinc-900 transition-all text-[10px] uppercase font-bold tracking-widest text-zinc-400 flex flex-col items-center gap-1">
+                    <span>Upload Batch Graphics</span>
+                    <span id="fileCount" class="text-[8px] opacity-50">Single or Multiple Files</span>
+                </button>
+                <div class="flex gap-2">
+                    <input type="file" id="mockupInput" accept="image/*" class="hidden">
+                    <button onclick="document.getElementById('mockupInput').click()" class="flex-1 py-2 text-[8px] btn-action uppercase rounded">Custom Mockup</button>
+                    <button id="clearMockup" class="px-3 py-2 text-[8px] btn-action uppercase hidden rounded">X</button>
                 </div>
+            </div>
 
-                <!-- Transparency Settings -->
-                <div class="space-y-5 pt-2 border-t border-zinc-900">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-baseline">
-                            <label class="text-[10px] uppercase font-bold text-zinc-400">1. White Cutoff</label>
+            <div class="space-y-6 flex-grow">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[10px] uppercase font-black text-zinc-400">1. Cutoff Range</label>
+                        <div class="flex gap-2">
+                            <button id="pickerBtn" class="text-[10px] px-2 border border-zinc-800 hover:text-red-500">Pick</button>
                             <span id="tolValue" class="text-xs font-bold text-red-500">240</span>
                         </div>
-                        <input type="range" id="tolerance" min="100" max="255" value="240">
                     </div>
-
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-baseline">
-                            <label class="text-[10px] uppercase font-bold text-white">2. Black Crush (Density)</label>
-                            <span id="crushValue" class="text-xs font-bold text-red-500">80</span>
-                        </div>
-                        <input type="range" id="blackCrush" min="0" max="200" value="80">
-                        <p class="text-[8px] text-zinc-600 uppercase">Forces semi-transparent pixels to solid ink.</p>
+                    <input type="range" id="tolerance" min="100" max="255" value="240">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[10px] uppercase font-black text-white">2. Black Crush (Density)</label>
+                        <span id="crushValue" class="text-xs font-bold text-red-500">80</span>
                     </div>
+                    <input type="range" id="blackCrush" min="0" max="255" value="80">
                 </div>
-
-                <!-- Ink Color Override -->
-                <div class="space-y-4 pt-4 border-t border-zinc-900 bg-zinc-900/40 p-4 rounded border border-zinc-800">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">3. Output Ink Color</label>
+                <div class="space-y-4 pt-6 border-t border-zinc-900">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[10px] uppercase font-black text-zinc-500">3. Alpha Feathering</label>
+                        <span id="featherValue" class="text-xs font-bold text-red-500">0</span>
+                    </div>
+                    <input type="range" id="feather" min="0" max="10" step="0.5" value="0">
+                    <div class="flex justify-between items-center bg-zinc-900/50 p-3 rounded border border-zinc-800">
+                        <label class="text-[10px] uppercase font-bold text-zinc-400">Ink Color</label>
                         <input type="color" id="inkColor" value="#000000" class="w-8 h-8 bg-transparent border-0 cursor-pointer">
                     </div>
-                    <p class="text-[8px] text-zinc-500 uppercase italic">Use #000000 for standard black print.</p>
                 </div>
-
-                <!-- Actions -->
-                <button id="processBtn" disabled class="w-full py-4 rounded btn-primary uppercase text-sm tracking-widest disabled:opacity-10">
-                    Apply Print Optimization
+                <button id="processBtn" disabled class="w-full py-4 rounded-lg btn-primary uppercase text-xs tracking-widest disabled:opacity-20">
+                    Process Production
                 </button>
+            </div>
 
-                <!-- View Modes -->
-                <div class="pt-4 border-t border-zinc-900 grid grid-cols-2 gap-2">
-                    <button onclick="setView('white')" class="bg-white text-black py-2 text-[8px] font-bold uppercase rounded border border-white">White Shirt</button>
-                    <button onclick="setView('black')" class="bg-black text-white py-2 text-[8px] font-bold uppercase rounded border border-zinc-700">Black Shirt</button>
-                    <button onclick="setView('checker')" class="bg-zinc-800 py-2 text-[8px] font-bold uppercase rounded hover:bg-zinc-700">Checker</button>
-                    <button onclick="setView('green')" class="bg-green-900 py-2 text-[8px] font-bold uppercase rounded hover:bg-green-800">Green Check</button>
-                </div>
-
-                <!-- Zoom Control -->
-                <div class="flex items-center justify-between gap-4 bg-black/40 p-3 rounded">
-                    <label class="text-[9px] uppercase font-bold text-zinc-500">Zoom</label>
-                    <input type="range" id="zoomScale" min="0.05" max="4" step="0.01" value="1">
-                    <span id="zoomVal" class="text-[9px] font-bold w-10 text-right">1.0x</span>
-                </div>
+            <div class="mt-8 space-y-4 pt-6 border-t border-zinc-900">
+                <a href="https://buymeacoffee.com/BUILT_BY_LIAM" target="_blank" class="w-full flex items-center justify-center gap-3 py-3 bg-zinc-100 hover:bg-yellow-400 text-black rounded font-black text-[10px] uppercase transition-all">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.242 11.312c1.867.23 3.274 1.818 3.274 3.705 0 2.059-1.671 3.73-3.73 3.73-.233 0-.463-.021-.685-.062l-.333 2.723c-.112.911-.884 1.592-1.799 1.592H7.031c-.915 0-1.687-.681-1.799-1.592l-1.574-12.833h13.228l.192 1.564c1.238-.363 2.502-.132 3.164.573zm-2.046 4.754c.245.021.491.033.738.033 1.252 0 2.27-1.018 2.27-2.27 0-1.159-.851-2.12-2.001-2.261l-.547-.066-.46 4.564zM3.639 5.231l15.471-1.334a1 1 0 011.082.908l.161 1.871H2.432l.125-1.455a1 1 0 011.082-.99zm1.361 5.231l.194 1.564h13.228l.194-1.564H5z"/></svg>
+                    Support Development
+                </a>
+                <div class="ad-space h-[100px] w-full rounded">Affiliate Slot</div>
             </div>
         </aside>
 
-        <!-- Preview Side -->
-        <main class="lg:col-span-8 flex flex-col h-full overflow-hidden">
-            <div id="canvasContainer" class="flex-grow white-shirt relative rounded-lg border border-zinc-900 overflow-hidden flex items-center justify-center">
+        <main class="flex-grow flex flex-col relative overflow-hidden bg-zinc-900">
+            <nav class="h-14 border-b border-zinc-900 flex items-center justify-between px-6 bg-black z-30">
+                <div class="flex gap-2">
+                    <button onclick="setView('white')" class="text-[9px] uppercase font-bold px-3 py-1 bg-white text-black rounded">White Shirt</button>
+                    <button onclick="setView('black')" class="text-[9px] uppercase font-bold px-3 py-1 bg-zinc-900 text-white rounded">Black Shirt</button>
+                    <button onclick="setView('checker')" class="text-[9px] uppercase font-bold px-3 py-1 border border-zinc-800 text-zinc-400 rounded">Checker</button>
+                    <button onclick="setView('green')" class="text-[9px] uppercase font-bold px-3 py-1 bg-green-900 text-green-200 rounded">Green Check</button>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="splitToggle" class="w-3 h-3 accent-red-600">
+                        <label for="splitToggle" class="text-[10px] uppercase text-zinc-500 font-bold">Split View</label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="range" id="zoomScale" min="0.05" max="3" step="0.01" value="1" class="w-24">
+                        <span id="zoomVal" class="text-[9px] font-bold w-10 text-right">1.0x</span>
+                    </div>
+                </div>
+            </nav>
+            <div id="canvasContainer" class="flex-grow white-shirt relative overflow-hidden flex items-center justify-center">
                 <div id="canvasWrapper">
-                    <canvas id="mainCanvas" class="shadow-2xl opacity-0 transition-opacity duration-300"></canvas>
+                    <canvas id="mainCanvas" class="shadow-2xl opacity-0 transition-opacity"></canvas>
+                    <div id="comparisonSlider" class="hidden"></div>
                 </div>
                 <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center text-zinc-800 uppercase italic pointer-events-none">
-                    <p class="text-sm font-black tracking-[1em]">Studio Idle</p>
+                    <p class="text-lg font-black tracking-[1em]">Studio Idle</p>
                 </div>
             </div>
-
-            <button id="downloadBtn" disabled class="mt-4 w-full border-2 border-zinc-900 py-4 uppercase text-[10px] font-black tracking-[0.5em] text-zinc-700 hover:text-white hover:border-red-600 transition-all disabled:opacity-0">
-                Download Production PNG
-            </button>
+            <footer class="bg-black/90 p-4 border-t border-zinc-900 flex justify-between items-center gap-4 z-30">
+                <div class="flex gap-2">
+                    <button id="downloadBtn" disabled class="px-6 py-2 text-[10px] btn-action uppercase rounded disabled:opacity-20">Download Master</button>
+                    <button id="batchDownloadBtn" disabled class="px-6 py-2 text-[10px] btn-action uppercase rounded disabled:opacity-20">Batch ZIP</button>
+                </div>
+                <div class="flex gap-8 text-[9px] uppercase tracking-widest text-zinc-500 font-bold">
+                    <a href="#blog" class="hover:text-white transition-colors">Blog</a>
+                    <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+                    <span class="opacity-20">|</span>
+                    <span id="statusInfo">LithoPrint Pro v3.2</span>
+                </div>
+            </footer>
         </main>
     </div>
 
+    <!-- BLOG PAGE -->
+    <div id="blogPage" class="page-hidden w-full h-screen flex flex-col bg-[#050505] overflow-y-auto">
+        <nav class="sticky top-0 h-16 border-b border-zinc-800 bg-black flex items-center justify-between px-10 z-50">
+            <h2 class="text-lg font-black tracking-tighter uppercase italic text-white">LithoPrint Blog</h2>
+            <a href="#" class="btn-action px-6 py-2 text-[10px] uppercase rounded">Back to Studio</a>
+        </nav>
+        <div class="max-w-3xl mx-auto py-20 px-6 space-y-20">
+            <article class="space-y-4">
+                <span class="text-red-600 text-[10px] font-bold uppercase tracking-widest">Article 01</span>
+                <h3 class="text-4xl font-black text-white uppercase tracking-tighter">The Death of the White Halo</h3>
+                <p class="text-zinc-500 leading-relaxed text-sm">Why do traditional background removers fail T-shirt printers? Most generic AI tools are built for social media, where a slightly fuzzy edge doesn't matter. In print, that "fuzz" translates into a white ring around your graphic. This guide explains how LithoPrint's Black Crush engine eliminates the halo once and for all.</p>
+            </article>
+            <article class="space-y-4">
+                <span class="text-red-600 text-[10px] font-bold uppercase tracking-widest">Article 02</span>
+                <h3 class="text-4xl font-black text-white uppercase tracking-tighter">AI Stencils: From Midjourney to Mesh</h3>
+                <p class="text-zinc-500 leading-relaxed text-sm">Generative art is incredible for stencil creation, but the output is often "noisy." Learn the workflow for cleaning Midjourney v6 monochromatic outputs and preparing them for a high-tension screen mesh using our production studio.</p>
+            </article>
+        </div>
+    </div>
+
+    <!-- FAQ PAGE -->
+    <div id="faqPage" class="page-hidden w-full h-screen flex flex-col bg-[#050505] overflow-y-auto">
+        <nav class="sticky top-0 h-16 border-b border-zinc-800 bg-black flex items-center justify-between px-10 z-50">
+            <h2 class="text-lg font-black tracking-tighter uppercase italic text-white">Technical Support</h2>
+            <a href="#" class="btn-action px-6 py-2 text-[10px] uppercase rounded">Back to Studio</a>
+        </nav>
+        <div class="max-w-2xl mx-auto py-20 px-6 space-y-12">
+            <div class="space-y-4">
+                <h4 class="text-white text-xl font-bold uppercase">Why does my PNG still have a white outline?</h4>
+                <p class="text-zinc-500 text-sm leading-relaxed uppercase italic">Standard removers leave anti-aliased grey pixels. LithoPrint Pro uses the "Black Crush" engine to force those pixels into transparency or solid ink.</p>
+            </div>
+            <div class="space-y-4 border-t border-zinc-900 pt-12">
+                <h4 class="text-white text-xl font-bold uppercase">Is this tool safe for 300 DPI files?</h4>
+                <p class="text-zinc-500 text-sm leading-relaxed uppercase italic">Yes. The tool processes the original pixel dimensions of your source file. We do not downsample. Your 300 DPI master stays 300 DPI.</p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const imageInput = document.getElementById('imageInput');
-        const tolInput = document.getElementById('tolerance');
-        const crushInput = document.getElementById('blackCrush');
-        const inkColorInput = document.getElementById('inkColor');
-        const tolVal = document.getElementById('tolValue');
-        const crushVal = document.getElementById('crushValue');
-        const zoomScale = document.getElementById('zoomScale');
-        const zoomVal = document.getElementById('zoomVal');
-        const canvasWrapper = document.getElementById('canvasWrapper');
-        const processBtn = document.getElementById('processBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const mainCanvas = document.getElementById('mainCanvas');
-        const ctx = mainCanvas.getContext('2d', { willReadFrequently: true });
-        const canvasContainer = document.getElementById('canvasContainer');
-
-        let originalImage = null;
-        let scale = 1, translateX = 0, translateY = 0, isDragging = false, startX, startY;
-
-        const updateDisplay = () => {
-            tolVal.textContent = tolInput.value;
-            crushVal.textContent = crushInput.value;
+        const el = {
+            imageInput: document.getElementById('imageInput'),
+            mockupInput: document.getElementById('mockupInput'),
+            clearMockup: document.getElementById('clearMockup'),
+            tolerance: document.getElementById('tolerance'),
+            blackCrush: document.getElementById('blackCrush'),
+            feather: document.getElementById('feather'),
+            inkColor: document.getElementById('inkColor'),
+            tolVal: document.getElementById('tolValue'),
+            crushVal: document.getElementById('crushValue'),
+            featherVal: document.getElementById('featherValue'),
+            zoomScale: document.getElementById('zoomScale'),
+            zoomVal: document.getElementById('zoomVal'),
+            canvasWrapper: document.getElementById('canvasWrapper'),
+            processBtn: document.getElementById('processBtn'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            batchBtn: document.getElementById('batchDownloadBtn'),
+            mainCanvas: document.getElementById('mainCanvas'),
+            canvasContainer: document.getElementById('canvasContainer'),
+            splitToggle: document.getElementById('splitToggle'),
+            slider: document.getElementById('comparisonSlider'),
+            pickerBtn: document.getElementById('pickerBtn'),
+            studioPage: document.getElementById('studioPage'),
+            blogPage: document.getElementById('blogPage'),
+            faqPage: document.getElementById('faqPage')
         };
-        [tolInput, crushInput].forEach(i => i.addEventListener('input', updateDisplay));
 
-        const setView = (mode) => {
-            canvasContainer.classList.remove('checkerboard', 'green-screen', 'black-shirt', 'white-shirt');
-            canvasContainer.classList.add(`${mode}-shirt`);
-            if(mode === 'checker') {
-                canvasContainer.classList.remove('checker-shirt');
-                canvasContainer.classList.add('checkerboard');
+        const ctx = el.mainCanvas.getContext('2d', { willReadFrequently: true });
+        
+        let state = {
+            originalImages: [],
+            currentIdx: 0,
+            scale: 1,
+            translateX: 0,
+            translateY: 0,
+            isDragging: false,
+            isSliderDragging: false,
+            startX: 0,
+            startY: 0,
+            splitX: 0.5,
+            isPicking: false
+        };
+
+        // --- HASH ROUTING (SEO Solution) ---
+        function handleRouting() {
+            const hash = window.location.hash;
+            el.studioPage.classList.add('page-hidden');
+            el.blogPage.classList.add('page-hidden');
+            el.faqPage.classList.add('page-hidden');
+
+            if (hash === '#blog') {
+                el.blogPage.classList.remove('page-hidden');
+                document.title = "Blog | LithoPrint Studio";
+            } else if (hash === '#faq') {
+                el.faqPage.classList.remove('page-hidden');
+                document.title = "FAQ | Technical Support";
+            } else {
+                el.studioPage.classList.remove('page-hidden');
+                document.title = "LithoPrint Studio | Background Remover";
             }
-            if(mode === 'green') {
-                canvasContainer.classList.remove('green-shirt');
-                canvasContainer.classList.add('green-screen');
-            }
-        };
+        }
 
-        const updateTransform = () => {
-            canvasWrapper.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-        };
+        window.addEventListener('hashchange', handleRouting);
+        window.addEventListener('load', handleRouting);
 
-        const handleZoom = () => {
-            scale = parseFloat(zoomScale.value);
-            zoomVal.textContent = scale.toFixed(2) + 'x';
-            updateTransform();
-        };
-        zoomScale.addEventListener('input', handleZoom);
+        // --- Core Engine (v2.0 Math) ---
+        function processImage(sourceImg, config) {
+            const offCanvas = document.createElement('canvas');
+            const offCtx = offCanvas.getContext('2d');
+            offCanvas.width = sourceImg.width;
+            offCanvas.height = sourceImg.height;
+            offCtx.drawImage(sourceImg, 0, 0);
 
-        // Interaction
-        canvasContainer.addEventListener('mousedown', (e) => { 
-            if (!originalImage) return; 
-            isDragging = true; 
-            startX = e.clientX - translateX; 
-            startY = e.clientY - translateY; 
-        });
-        window.addEventListener('mousemove', (e) => { 
-            if (!isDragging) return; 
-            translateX = e.clientX - startX; 
-            translateY = e.clientY - startY; 
-            updateTransform(); 
-        });
-        window.addEventListener('mouseup', () => isDragging = false);
-        canvasContainer.addEventListener('wheel', (e) => { 
-            e.preventDefault(); 
-            let delta = e.deltaY > 0 ? -0.05 : 0.05;
-            let newScale = Math.min(Math.max(parseFloat(zoomScale.value) + delta, 0.05), 4);
-            zoomScale.value = newScale;
-            handleZoom(); 
-        }, { passive: false });
-
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    originalImage = img;
-                    mainCanvas.width = img.width; mainCanvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
-                    mainCanvas.classList.remove('opacity-0');
-                    document.getElementById('emptyState').style.display = 'none';
-                    processBtn.disabled = false;
-                    // Auto-fit logic
-                    const sFit = Math.min((canvasContainer.offsetWidth-40)/img.width, (canvasContainer.offsetHeight-40)/img.height, 1);
-                    zoomScale.value = sFit;
-                    translateX = 0; translateY = 0;
-                    handleZoom();
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        const hexToRgb = (hex) => {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return { r, g, b };
-        };
-
-        processBtn.addEventListener('click', () => {
-            if (!originalImage) return;
-            ctx.drawImage(originalImage, 0, 0);
-            let imageData = ctx.getImageData(0, 0, mainCanvas.width, mainCanvas.height);
+            let imageData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
             let data = imageData.data;
-            
-            const cutoff = parseInt(tolInput.value);
-            const crush = parseInt(crushInput.value);
-            const ink = hexToRgb(inkColorInput.value);
+            const ink = hexToRgb(config.inkColor);
 
             for (let i = 0; i < data.length; i += 4) {
                 const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
-                
-                // Color Override
-                data[i] = ink.r;
-                data[i+1] = ink.g;
-                data[i+2] = ink.b;
-
-                if (brightness >= cutoff) {
+                data[i] = ink.r; data[i+1] = ink.g; data[i+2] = ink.b;
+                if (brightness >= config.tolerance) {
                     data[i + 3] = 0;
                 } else {
                     let alpha = 255;
-                    if (brightness > crush) {
-                        const range = cutoff - crush;
-                        const factor = (cutoff - brightness) / range;
-                        alpha = factor * 255;
+                    if (brightness > config.crush) {
+                        const range = config.tolerance - config.crush;
+                        alpha = ((config.tolerance - brightness) / range) * 255;
                     }
                     data[i + 3] = Math.min(255, alpha);
                 }
             }
+            offCtx.putImageData(imageData, 0, 0);
+            if (config.feather > 0) {
+                const fCanvas = document.createElement('canvas');
+                fCanvas.width = offCanvas.width; fCanvas.height = offCanvas.height;
+                const fCtx = fCanvas.getContext('2d');
+                fCtx.filter = `blur(${config.feather}px)`;
+                fCtx.drawImage(offCanvas, 0, 0);
+                return fCanvas;
+            }
+            return offCanvas;
+        }
 
-            ctx.putImageData(imageData, 0, 0);
-            downloadBtn.disabled = false;
+        function render() {
+            if (!state.originalImages[state.currentIdx]) return;
+            const source = state.originalImages[state.currentIdx].img;
+            const config = { tolerance: parseInt(el.tolerance.value), crush: parseInt(el.blackCrush.value), feather: parseFloat(el.feather.value), inkColor: el.inkColor.value };
+            const result = processImage(source, config);
+            el.mainCanvas.width = source.width; el.mainCanvas.height = source.height;
+            if (el.splitToggle.checked) {
+                ctx.clearRect(0, 0, el.mainCanvas.width, el.mainCanvas.height);
+                ctx.drawImage(source, 0, 0);
+                const splitPixel = el.mainCanvas.width * state.splitX;
+                ctx.save(); ctx.beginPath(); ctx.rect(0, 0, splitPixel, el.mainCanvas.height); ctx.clip();
+                ctx.drawImage(result, 0, 0); ctx.restore();
+                el.slider.style.display = 'block'; el.slider.style.left = (state.splitX * 100) + '%';
+            } else {
+                ctx.clearRect(0, 0, el.mainCanvas.width, el.mainCanvas.height);
+                ctx.drawImage(result, 0, 0);
+                el.slider.style.display = 'none';
+            }
+            el.downloadBtn.disabled = false; el.batchBtn.disabled = state.originalImages.length < 2;
+        }
+
+        function setView(mode) {
+            el.canvasContainer.classList.remove('checkerboard', 'green-screen', 'black-shirt', 'white-shirt', 'mockup-bg');
+            if (mode === 'checker') el.canvasContainer.classList.add('checkerboard');
+            else if (mode === 'green') el.canvasContainer.classList.add('green-screen');
+            else if (mode === 'black') el.canvasContainer.classList.add('black-shirt');
+            else if (mode === 'white') el.canvasContainer.classList.add('white-shirt');
+        }
+
+        function updateTransform() { el.canvasWrapper.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`; }
+
+        el.imageInput.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files); if (!files.length) return;
+            state.originalImages = [];
+            for (const f of files) {
+                const img = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = URL.createObjectURL(f); });
+                state.originalImages.push({ file: f, img });
+            }
+            document.getElementById('fileCount').textContent = `${files.length} files loaded`;
+            el.processBtn.disabled = false; document.getElementById('emptyState').style.display = 'none';
+            el.mainCanvas.classList.remove('opacity-0');
+            const img = state.originalImages[0].img; const container = el.canvasContainer.getBoundingClientRect();
+            state.scale = Math.min((container.width - 80) / img.width, (container.height - 80) / img.height, 1);
+            state.translateX = 0; state.translateY = 0; el.zoomScale.value = state.scale; render(); updateTransform();
         });
 
-        downloadBtn.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = `lithoprint_master_${Date.now()}.png`;
-            link.href = mainCanvas.toDataURL('image/png');
-            link.click();
+        el.mockupInput.addEventListener('change', (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            el.canvasContainer.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+            setView('mockup'); el.clearMockup.classList.remove('hidden');
         });
+
+        el.clearMockup.onclick = () => { el.canvasContainer.style.backgroundImage = ''; el.clearMockup.classList.add('hidden'); setView('white'); };
+        el.zoomScale.oninput = () => { state.scale = parseFloat(el.zoomScale.value); el.zoomVal.textContent = state.scale.toFixed(2) + 'x'; updateTransform(); };
+        el.canvasContainer.addEventListener('wheel', (e) => {
+            if (!el.blogPage.classList.contains('page-hidden') || !el.faqPage.classList.contains('page-hidden')) return;
+            e.preventDefault(); state.scale = Math.min(Math.max(state.scale + (e.deltaY > 0 ? -0.05 : 0.05), 0.05), 3);
+            el.zoomScale.value = state.scale; el.zoomVal.textContent = state.scale.toFixed(2) + 'x'; updateTransform();
+        }, { passive: false });
+
+        el.canvasContainer.onmousedown = (e) => { if (e.target === el.slider) { state.isSliderDragging = true; return; } state.isDragging = true; state.startX = e.clientX - state.translateX; state.startY = e.clientY - state.translateY; };
+        window.onmousemove = (e) => {
+            if (state.isSliderDragging) { const r = el.canvasWrapper.getBoundingClientRect(); state.splitX = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1); render(); }
+            else if (state.isDragging) { state.translateX = e.clientX - state.startX; state.translateY = e.clientY - state.startY; updateTransform(); }
+        };
+        window.onmouseup = () => { state.isDragging = false; state.isSliderDragging = false; };
+        el.processBtn.onclick = render; el.splitToggle.onchange = render;
+        [el.tolerance, el.blackCrush, el.feather, el.inkColor].forEach(i => i.oninput = () => { el.tolVal.textContent = el.tolerance.value; el.crushVal.textContent = el.blackCrush.value; el.featherVal.textContent = el.feather.value; if (!el.splitToggle.checked) render(); });
+        el.downloadBtn.onclick = () => { const config = { tolerance: parseInt(el.tolerance.value), crush: parseInt(el.blackCrush.value), feather: parseFloat(el.feather.value), inkColor: el.inkColor.value }; const final = processImage(state.originalImages[state.currentIdx].img, config); const link = document.createElement('a'); link.download = `litho_pro_${Date.now()}.png`; link.href = final.toDataURL('image/png'); link.click(); };
+        el.batchBtn.onclick = async () => {
+            const zip = new JSZip(); const config = { tolerance: parseInt(el.tolerance.value), crush: parseInt(el.blackCrush.value), feather: parseFloat(el.feather.value), inkColor: el.inkColor.value };
+            document.getElementById('statusInfo').textContent = "Packing...";
+            for (const item of state.originalImages) { const canvas = processImage(item.img, config); const blob = await new Promise(r => canvas.toBlob(r, 'image/png')); zip.file(`litho_${item.file.name.split('.')[0]}.png`, blob); }
+            zip.generateAsync({type:"blob"}).then(c => { const link = document.createElement('a'); link.href = URL.createObjectURL(c); link.download = `litho_batch.zip`; link.click(); document.getElementById('statusInfo').textContent = "Complete"; });
+        };
+        function hexToRgb(hex) { const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16); return {r,g,b}; }
     </script>
 </body>
 </html>

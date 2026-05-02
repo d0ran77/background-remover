@@ -1,0 +1,3 @@
+git add .
+git commit -m "Update LithoPrint Studio"
+git push
