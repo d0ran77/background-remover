@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LithoPrint Studio v6.9 | Professional Layered Production Suite</title>
+    <title>BlackCrush Studio v1.0 | Professional Layered Production Suite</title>
     
     <!-- Primary SEO Meta Tags -->
     <meta name="description" content="Professional layered background removal, ink density optimization, and 300 DPI production exports for apparel designers. Includes Pantone-to-Hex lookup, typographic envelopes, and modular stencil compositing.">
@@ -14,11 +14,11 @@
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "LithoPrint Studio",
+      "name": "BlackCrush Studio",
       "operatingSystem": "Web",
       "applicationCategory": "DesignSoftware",
       "featureList": [
-        "Luminance-to-Alpha Mapping",
+        "Dual Extraction Engine (Light/Dark BG)",
         "300 DPI Metadata Injection",
         "Black Crush Ink Density Engine",
         "Industrial Grain Texture Engine",
@@ -112,7 +112,7 @@
         <div class="max-w-4xl w-full glass-panel rounded-3xl overflow-hidden shadow-[0_0_150px_rgba(0,0,0,0.9)]">
             <div class="p-16 space-y-12">
                 <header class="text-center space-y-3">
-                    <h1 class="text-6xl font-black italic tracking-tighter text-white uppercase leading-none" style="font-family: 'Roboto Mono', monospace;">LithoPrint Pro v6.9</h1>
+                    <h1 class="text-6xl font-black italic tracking-tighter text-white uppercase leading-none" style="font-family: 'Roboto Mono', monospace;">BlackCrush Pro v1.0</h1>
                     <p class="text-red-500 uppercase tracking-[0.6em] text-[10px] font-black">Industrial Apparel Compositor</p>
                 </header>
                 
@@ -121,8 +121,8 @@
                         <div class="flex gap-6">
                             <span class="w-12 h-12 rounded-2xl bg-white/5 text-white flex items-center justify-center font-black text-lg italic border border-white/10 shadow-lg">01</span>
                             <div>
-                                <h3 class="text-white font-black uppercase text-sm tracking-widest">Surgical Removal</h3>
-                                <p class="text-zinc-400 text-xs leading-relaxed mt-2">Use the <b>Eye Drop</b> to sample backgrounds. Adjust <b>White Cutoff</b> to delete and <b>Black Crush</b> to cauterize ink edges for DTG/Screen stencils.</p>
+                                <h3 class="text-white font-black uppercase text-sm tracking-widest">Dual Extraction Engine</h3>
+                                <p class="text-zinc-400 text-xs leading-relaxed mt-2">Target light OR dark backgrounds. If your design has white in it, generate your AI asset on a black background and set the engine to <b>"Remove Dark Backgrounds"</b>.</p>
                             </div>
                         </div>
                         <div class="flex gap-6">
@@ -164,8 +164,8 @@
         <!-- LEFT RAIL: THE STACK -->
         <aside id="leftSidebar" class="sidebar flex flex-col h-screen p-5 shrink-0 z-30" style="width: 288px;">
             <header class="mb-8">
-                <h1 class="text-lg font-black italic tracking-tighter text-white uppercase leading-none">LithoPrint Studio</h1>
-                <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Modular Workflow // v6.9</p>
+                <h1 class="text-lg font-black italic tracking-tighter text-white uppercase leading-none">BlackCrush Studio</h1>
+                <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Live Production // v1.0</p>
             </header>
 
             <button id="addLayerBtn" class="w-full py-3 mb-6 bg-zinc-100 hover:bg-red-600 text-black hover:text-white transition-all rounded font-black text-[10px] uppercase tracking-widest shadow-lg">
@@ -303,38 +303,36 @@
                 <header class="mb-20">
                     <span class="text-red-600 text-[10px] font-black uppercase tracking-[0.4em]">Masterclass Volume I</span>
                     <h1>The Physics of Apparel Compositing</h1>
-                    <p class="text-zinc-500 text-lg italic mt-4">Advanced background removal protocols, layer organization, the Alpha Edge, and Pantone integration for industrial DTG and Screen Printing.</p>
+                    <p class="text-zinc-500 text-lg italic mt-4">Advanced background removal protocols, the Alpha Edge, Dual Extraction, and Pantone integration for industrial DTG and Screen Printing.</p>
                 </header>
                 
-                <h2>1. The White Background Strategy for AI Assets</h2>
-                <p>When creating high-contrast stencils or vector-style graphics using AI models like <strong>Midjourney, DALL-E 3, or Stable Diffusion</strong>, the most common failure point for novice designers is a messy, unpredictable background. AI models do not currently possess the ability to export true, native alpha-channel transparency. Instead, if you prompt for "transparent," they simulate it with highly complex grey grids, shadow-gradients, or hazy environmental lighting. These simulated backgrounds are catastrophic for professional print production, as RIP (Raster Image Processor) software will attempt to print them.</p>
+                <h2>1. The Dual Extraction Engine: Preserving White Ink</h2>
+                <p>When creating high-contrast stencils or vector-style graphics using AI models like <strong>Midjourney, DALL-E 3, or Stable Diffusion</strong>, the most common failure point for designers is losing the white details inside their artwork when attempting to remove a white background. Standard luminance tools cannot differentiate between the white of the background and the white of your design.</p>
                 
-                <p>To achieve surgical precision with the LithoPrint Studio engine, you must force the AI to provide a <strong>pure, flat, solid white background</strong> (RGB 255, 255, 255). Here is the professional production-grade prompting strategy:</p>
+                <p>To solve this, BlackCrush Studio v1.0 introduces the <strong>Dual Extraction Engine</strong>. Here is the professional production-grade workflow for preserving white ink on dark garments:</p>
                 
                 <ul>
-                    <li><strong>Mandatory Prompt Keywords:</strong> Always append the following suffix to your AI generation prompts: <code>"isolated on a flat, solid, pure white background, high contrast, monochromatic, no shadows, no gradients, clean vector style."</code></li>
-                    <li><strong>The Mathematics of Deletion:</strong> The LithoPrint engine utilizes a sophisticated <em>Luminance-to-Alpha</em> mapping algorithm. Pure white is the highest possible luminance value. By setting your <strong>White Cutoff</strong> slider to 240-250, white is the easiest mathematical value to isolate and delete with 100% certainty. It leaves no "ghost" pixels, no dust, and no pinholes for the screen exposure process.</li>
-                    <li><strong>The Eye-Drop Fix for "Dirty" Generation:</strong> If your AI image returns with a slightly "off-white" background (e.g., a warm cream or a cool grey-white), do not panic. Select the layer in LithoPrint, activate the <strong>Eye Drop</strong> tool, and click directly on the unwanted background color in the canvas. The engine will instantly recalibrate its deletion threshold around that specific hex code, stripping it away perfectly.</li>
+                    <li><strong>The Prompting Strategy:</strong> Do not generate your AI assets on a white background. Instead, append this to your prompt: <code>"isolated on a flat, solid, pure black background, high contrast, clean vector style."</code></li>
+                    <li><strong>The Extraction:</strong> Import your graphic into BlackCrush and change the Extraction Engine in the right-hand Inspector from "Remove Light Backgrounds" to <strong>"Remove Dark Backgrounds"</strong>. </li>
+                    <li><strong>The Result:</strong> The engine will mathematically strip away the black background while preserving 100% of your white and bright foreground details, ensuring a perfect stencil for black shirts.</li>
                 </ul>
 
                 <h2>2. Cauterizing the Alpha Edge (Defeating the White Halo)</h2>
-                <p>One of the most persistent issues in Direct-to-Garment (DTG) printing is the "White Halo" effect. To understand how LithoPrint prevents this, you must understand digital anti-aliasing. To make a curved line look smooth on a computer monitor, software automatically generates hundreds of "soft," semi-transparent grey pixels at the boundary of the shape. </p>
+                <p>One of the most persistent issues in Direct-to-Garment (DTG) printing is the "White Halo" effect. To make a curved line look smooth on a computer monitor, software automatically generates hundreds of "soft," semi-transparent grey pixels at the boundary of the shape. </p>
                 
-                <p>However, when a digital apparel printer receives this file for a dark garment (like a Black or Navy shirt), its RIP software interprets these semi-transparent grey pixels as a "light color." To print a light color on a dark shirt, the machine must first lay down a thick <strong>white ink underbase</strong>. It prints this white underbase beneath the semi-transparent pixels, resulting in a highly visible, crusty white ring around your entire design.</p>
+                <p>However, when a digital apparel printer receives this file for a dark garment, its RIP software interprets these semi-transparent grey pixels as a "light color." To print a light color on a dark shirt, the machine must first lay down a thick <strong>white ink underbase</strong>. It prints this white underbase beneath the semi-transparent pixels, resulting in a highly visible, crusty white ring around your entire design.</p>
                 
-                <p>LithoPrint eliminates this via the <strong>Black Crush (Density)</strong> slider. This tool actively "cauterizes" the edges of your stencil. By increasing the Crush value, you force the engine to mathematically threshold those semi-transparent pixels, snapping them into either 100% solid, opaque ink, or 100% pure transparency. By ensuring there are no semi-transparent mid-tones at the boundary, the printer bypasses the white underbase logic entirely, resulting in an infinitely sharper, industrial-grade print.</p>
+                <p>BlackCrush eliminates this via the <strong>Density Crush</strong> slider. This tool actively "cauterizes" the edges of your stencil. By increasing the Crush value, you force the engine to mathematically threshold those semi-transparent pixels, snapping them into either 100% solid, opaque ink, or 100% pure transparency. By ensuring there are no semi-transparent mid-tones at the boundary, the printer bypasses the white underbase logic entirely, resulting in an infinitely sharper, industrial-grade print.</p>
                 
                 <h2>3. Native 300 DPI Binary Metadata Injection</h2>
                 <p>A fatal flaw of almost all web-based design and background removal tools is the browser's default export limitation. Web browsers are designed to export images at <strong>72 DPI (Dots Per Inch)</strong>, which is the standard resolution for digital screens. </p>
                 
                 <p>While a 72 DPI image might look pristine on an Instagram feed or a Shopify mockup, it lacks the necessary physical metadata required for physical manufacturing. When you send a 72 DPI file to a professional print house, their RIP software (such as Garment Creator, CADlink, or Wasatch) will read the low physical density and attempt to automatically scale the design up by roughly 416% to match the physical garment dimensions. This forced scaling results in severe pixelation, jagged edges, and a ruined print.</p>
                 
-                <p>LithoPrint Studio circumvents browser limitations by executing a <strong>low-level binary metadata injection</strong> during every download. When you click "Download Master PNG," our engine parses the raw binary data stream of your composite image. It locates the critical <code>pHYs</code> (Physical Pixel Dimensions) chunk within the PNG header and manually rewrites the pixels-per-meter integer values to precisely match 300 DPI (approximately 11811 pixels per meter). Consequently, when your print provider opens your master file in Adobe Photoshop, CorelDRAW, or Adobe Illustrator, it registers at its true, intended physical print size with 1:1 pixel fidelity.</p>
+                <p>BlackCrush Studio circumvents browser limitations by executing a <strong>low-level binary metadata injection</strong> during every download. When you click "Download Master PNG," our engine parses the raw binary data stream of your composite image. It locates the critical <code>pHYs</code> (Physical Pixel Dimensions) chunk within the PNG header and manually rewrites the pixels-per-meter integer values to precisely match 300 DPI (approximately 11811 pixels per meter). Consequently, when your print provider opens your master file in Adobe Photoshop, CorelDRAW, or Adobe Illustrator, it registers at its true, intended physical print size with 1:1 pixel fidelity.</p>
 
-                <h2>4. Architectural Organization: Naming and Compositing Layers</h2>
-                <p>Professional apparel lines are rarely flat black and white. LithoPrint introduces a modular layer stack, allowing you to compose complex, multi-pass prints directly in the browser. As your productions grow from simple isolated graphics to complex 10+ layer compositions (e.g., combining distressed halftone textures, solid base layers, and Pantone-matched typography), maintaining an organized <strong>Layer Stack</strong> is vital.</p>
-                
-                <p>Use the built-in rename function (click the <strong>✎ Pencil Icon</strong> on any layer) to tag layers systematically (e.g., <code>BASE_UNDERBASE_WHT</code>, <code>PHYSIS_RED_TXT</code>). This ensures that when organizing files for a print technician or reviewing complex layouts, your separation logic remains completely transparent.</p>
+                <h2>4. Pantone Integration and Multi-Layer Compositing</h2>
+                <p>Professional apparel lines are rarely flat black and white. BlackCrush introduces a modular layer stack, allowing you to compose complex, multi-pass prints directly in the browser. As your productions grow from simple isolated graphics to complex compositions, use the built-in rename function (click the <strong>✎ Pencil Icon</strong>) to tag layers systematically (e.g., <code>BASE_WHT</code>, <code>PHYSIS_RED</code>).</p>
                 
                 <p>To support professional color matching across independent print runs, we have integrated an <strong>Automatic Pantone Lookup</strong> feature. Inside the Inspector's "Production Ink Color" unit, you can type standard apparel Pantone references (e.g., <code>032</code> for bright red, <code>186</code> for deep red, <code>Warm Grey</code>, <code>Process Blue</code>) directly into the Hex input. The engine will instantly recognize the Pantone, inject the exact RGB equivalent into your stencil layer, and display a "Pantone Matched" verification badge. This guarantees your digital proofs accurately represent the physical ink mix on the factory floor.</p>
             </article>
@@ -354,19 +352,30 @@
             
             <section>
                 <h2>1. The Quick Start Workflow</h2>
-                <p>LithoPrint Studio operates differently than standard photo editors. It is an industrial compositor designed specifically for apparel stencils. Follow this sequence for perfect results:</p>
+                <p>BlackCrush Studio operates differently than standard photo editors. It is an industrial compositor designed specifically for apparel stencils. Follow this sequence for perfect results:</p>
                 <ol>
                     <li><strong>Add a Layer:</strong> Click the large <code>[+] Add Production Layer</code> button on the left rail. Choose "Graphic Asset" to upload a PNG/JPG, or "Typography Stencil" to generate text.</li>
                     <li><strong>Target the Layer:</strong> Your layer will appear in the left-hand stack. Click it once to make it "Active" (it will highlight red). You must select a layer to edit its properties.</li>
                     <li><strong>Position & Scale:</strong> With the layer active, click and drag anywhere on the main canvas to move the asset. Use the <code>Asset Scale</code> slider in the right-hand Inspector to resize it.</li>
-                    <li><strong>Remove Backgrounds:</strong> For Graphic Assets, use the <code>Eye Drop</code> tool to sample the unwanted background color. Adjust the <code>White Cutoff</code> slider until the background disappears.</li>
+                    <li><strong>Remove Backgrounds:</strong> For Graphic Assets, set the <code>Extraction Engine</code> to target Light or Dark backgrounds. Adjust the <code>Cutoff</code> slider until the background disappears.</li>
                     <li><strong>Apply Ink Settings:</strong> Toggle the <code>Stencil Engine</code> ON to force the graphic into a single, monochromatic ink color (perfect for screen printing). Use the Hex/Pantone box to set the exact color.</li>
                 </ol>
             </section>
 
             <section class="border-t border-zinc-900 pt-16">
-                <h2>2. Typography Envelopes Guide</h2>
-                <p>LithoPrint includes 12 industry-standard fonts and 7 advanced vector distortion envelopes to shape your text around graphics.</p>
+                <h2>2. Preserving White Detail (The Dual Engine)</h2>
+                <p>If you upload a graphic with a white background AND white internal details, the standard removal tool will erase your internal details. <strong>To fix this:</strong></p>
+                <ul>
+                    <li>Generate or create your source artwork on a <strong>Solid Black Background</strong>.</li>
+                    <li>Import it into BlackCrush Studio.</li>
+                    <li>In the right-hand Inspector, change the Extraction Engine dropdown to <strong>"Remove Dark Backgrounds"</strong>.</li>
+                    <li>The engine will cleanly strip the black and preserve all of your white highlights perfectly.</li>
+                </ul>
+            </section>
+
+            <section class="border-t border-zinc-900 pt-16">
+                <h2>3. Typography Envelopes Guide</h2>
+                <p>BlackCrush includes 12 industry-standard fonts and 7 advanced vector distortion envelopes to shape your text around graphics.</p>
                 <ul>
                     <li><strong>Straight:</strong> Standard, un-warped text with adjustable kerning (spacing) and font weight.</li>
                     <li><strong>Arc Curve:</strong> Bends the text along a perfect circle. A positive <em>Strength</em> creates a "Rainbow" arch over a graphic. A negative <em>Strength</em> creates a "Smile" underneath a graphic.</li>
@@ -379,7 +388,7 @@
             </section>
 
             <section class="border-t border-zinc-900 pt-16">
-                <h2>3. Frequently Asked Questions (FAQ)</h2>
+                <h2>4. Frequently Asked Questions (FAQ)</h2>
                 
                 <h3>Q: How do I rename and organize my layers?</h3>
                 <p>A: To keep your production workspace organized, click the small pencil icon (✎) on any layer in the left rail to rename it. We highly recommend naming your layers by their intended ink color or function (e.g., "Distressed Base" or "Pantone 032 Slogan") to avoid confusion on complex builds.</p>
@@ -393,8 +402,8 @@
                 <h3>Q: Can I resize the sidebars?</h3>
                 <p>A: Yes. Hover your mouse over the dark borders separating the left/right panels from the main canvas. When the cursor changes, click and drag to make the side panels wider or narrower to fit your workflow or external AdSense units.</p>
                 
-                <h3>Q: Does LithoPrint compress or downsample my images?</h3>
-                <p>A: Absolutely not. LithoPrint performs strict <strong>1:1 Pixel Mapping</strong>. If you upload a 6000x8000 pixel asset, the engine will map and process all 48 million pixels individually. When you download the master, it will retain its original extreme resolution.</p>
+                <h3>Q: Does BlackCrush compress or downsample my images?</h3>
+                <p>A: Absolutely not. BlackCrush performs strict <strong>1:1 Pixel Mapping</strong>. If you upload a 6000x8000 pixel asset, the engine will map and process all 48 million pixels individually. When you download the master, it will retain its original extreme resolution.</p>
 
                 <h3>Q: What is the purpose of the "Green Check" view mode?</h3>
                 <p>A: The standard transparent "checkerboard" background is excellent for general layout, but its contrasting squares can easily hide faint, semi-transparent grey or white "ghost" pixels at the edge of your graphic. By switching to the <strong>Green Check</strong> (a glaring neon chroma-green), any remaining white fringe or anti-aliasing artifacts will stand out immediately. Always use Green Check to stress-test your cutoff range before final export.</p>
@@ -512,7 +521,7 @@
                 id, type, visible: true, x: 0, y: 0, scale: 0.5,
                 name: type === 'image' ? 'Asset Layer' : 'Text Stencil',
                 config: {
-                    inkColor: '#000000', cutoff: 245, crush: 80, grain: 0, stencil: type === 'text',
+                    inkColor: '#000000', cutoff: 245, crush: 80, grain: 0, stencil: type === 'text', extractMode: type === 'image' ? 'none' : 'white',
                     text: 'NEW SLOGAN', font: "'Roboto Mono'", spacing: 0, weight: 700, effect: 'none', strength: 30
                 }
             };
@@ -643,23 +652,33 @@
                 html = `
                     <div class="space-y-4">
                         <label class="ui-label text-zinc-100 italic">2. Layer Properties</label>
+                        <div class="space-y-1 pb-2">
+                            <label class="text-[7px] uppercase font-bold text-zinc-600">Extraction Engine</label>
+                            <select class="inspector-select bg-black border border-zinc-800 text-[9px] p-2 rounded-lg text-white w-full" data-prop="extractMode">
+                                <option value="white" ${layer.config.extractMode === 'white' ? 'selected' : ''}>Remove Light Backgrounds</option>
+                                <option value="black" ${layer.config.extractMode === 'black' ? 'selected' : ''}>Remove Dark Backgrounds</option>
+                                <option value="none" ${layer.config.extractMode === 'none' ? 'selected' : ''}>No Extraction (Original Image)</option>
+                            </select>
+                        </div>
                         <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded border border-white/5 shadow-inner">
                             <span class="text-[9px] uppercase font-black text-zinc-400 tracking-tighter">Stencil Engine</span>
                             <input type="checkbox" class="inspector-check w-4 h-4 accent-red-600" data-prop="stencil" ${layer.config.stencil ? 'checked':''}>
                         </div>
-                        <div class="space-y-2">
+                        <div class="space-y-2 pt-2">
                             <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>Asset Scale</span><span class="val-display">${layer.scale.toFixed(2)}</span></div>
                             <input type="range" class="layer-scale-slider" min="0.05" max="3" step="0.01" value="${layer.scale}">
                         </div>
+                        ${layer.config.extractMode !== 'none' ? `
                         <div class="space-y-2">
-                            <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>White Cutoff</span><span class="val-display">${layer.config.cutoff}</span></div>
+                            <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>Background Cutoff</span><span class="val-display">${layer.config.cutoff}</span></div>
                             <input type="range" class="inspector-slider" data-prop="cutoff" min="0" max="255" value="${layer.config.cutoff}">
                         </div>
                         ${layer.config.stencil ? `
                         <div class="space-y-2">
-                            <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>Ink Density Crush</span><span class="val-display">${layer.config.crush}</span></div>
+                            <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>Density Crush</span><span class="val-display">${layer.config.crush}</span></div>
                             <input type="range" class="inspector-slider" data-prop="crush" min="0" max="255" value="${layer.config.crush}">
                         </div>
+                        ` : ''}
                         ` : ''}
                     </div>
                 `;
@@ -771,7 +790,11 @@
             }
 
             el.context.querySelectorAll('.inspector-select').forEach(s => {
-                s.onchange = (e) => { l.config[e.target.dataset.prop] = e.target.value; render(); };
+                s.onchange = (e) => { 
+                    l.config[e.target.dataset.prop] = e.target.value; 
+                    if(e.target.dataset.prop === 'extractMode') updateInspectorUI();
+                    render(); 
+                };
             });
 
             const check = el.context.querySelector('.inspector-check');
@@ -852,23 +875,59 @@
             });
         }
 
-        // --- MASTER RENDER COMPOSITOR ---
+        // --- MASTER RENDER COMPOSITOR WITH DUAL EXTRACTION ENGINE ---
         function processLayer(l) {
             const canvas = document.createElement('canvas');
             const pCtx = canvas.getContext('2d');
             let w, h;
             if (l.type === 'image') { w = l.img.width; h = l.img.height; canvas.width = w; canvas.height = h; pCtx.drawImage(l.img, 0, 0); }
             else { w = 3000; h = 3000; canvas.width = w; canvas.height = h; pCtx.fillStyle = '#FFFFFF'; pCtx.fillRect(0,0,w,h); drawTextLayer(pCtx, l, w, h); }
+            
+            const extractMode = l.config.extractMode || 'white';
+            
+            // Skip intensive pixel processing if not extracting and not stenciling
+            if (l.type === 'image' && extractMode === 'none' && !l.config.stencil) {
+                return canvas;
+            }
+
             const imgData = pCtx.getImageData(0,0,w,h);
             const d = imgData.data, ink = hexToRgb(l.config.inkColor);
+
             for (let i = 0; i < d.length; i += 4) {
                 const b = (0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
                 if (l.config.stencil) { d[i] = ink.r; d[i+1] = ink.g; d[i+2] = ink.b; }
-                if (b >= l.config.cutoff) d[i+3] = 0;
-                else {
-                    let a = 255;
-                    if (l.config.stencil && b > l.config.crush) a = ((l.config.cutoff - b) / (l.config.cutoff - l.config.crush)) * 255;
-                    d[i+3] = Math.min(255, a);
+                
+                if (extractMode === 'none') {
+                    // Do nothing to the alpha channel
+                    continue;
+                } else if (extractMode === 'black') {
+                    // REMOVE DARK BACKGROUNDS (Keep Whites)
+                    // The slider says "245" for tight cutoff. We invert this to mean "10" from bottom.
+                    const blackCutoff = 255 - l.config.cutoff; 
+                    const blackCrush = 255 - l.config.crush;
+                    
+                    if (b <= blackCutoff) {
+                        d[i+3] = 0;
+                    } else {
+                        let a = 255;
+                        if (blackCrush > blackCutoff && b < blackCrush) {
+                            a = ((b - blackCutoff) / (blackCrush - blackCutoff)) * 255;
+                        }
+                        if (l.config.stencil && b > blackCrush) {
+                            a = 255; // Force solid ink if above crush
+                        }
+                        d[i+3] = Math.min(255, Math.max(0, a));
+                    }
+                } else {
+                    // REMOVE LIGHT BACKGROUNDS (Keep Darks)
+                    if (b >= l.config.cutoff) d[i+3] = 0;
+                    else {
+                        let a = 255;
+                        if (l.config.cutoff > l.config.crush && b > l.config.crush) {
+                            a = ((l.config.cutoff - b) / (l.config.cutoff - l.config.crush)) * 255;
+                        }
+                        d[i+3] = Math.min(255, Math.max(0, a));
+                    }
                 }
             }
             pCtx.putImageData(imgData, 0, 0);
@@ -940,7 +999,7 @@
                     newBuffer.set(new Uint8Array(arrayBuffer.slice(0, 33)), 0); 
                     newBuffer.set(physChunk, 33);
                     newBuffer.set(new Uint8Array(arrayBuffer.slice(33)), 33 + physChunk.length);
-                    const link = document.createElement('a'); link.download = `lithoprint_master_v69.png`;
+                    const link = document.createElement('a'); link.download = `blackcrush_master_v1.png`;
                     link.href = URL.createObjectURL(new Blob([newBuffer], { type: 'image/png' })); link.click();
                 };
                 reader.readAsArrayBuffer(blob);
