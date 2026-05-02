@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LithoPrint Studio v4.1 | Pro Production Suite</title>
+    <title>LithoPrint Studio v4.4 | Pro Production Suite</title>
     
     <!-- SEO & Metadata -->
-    <meta name="description" content="Professional-grade background removal, ink density optimization, and 300 DPI production exports for T-shirt designers.">
+    <meta name="description" content="Professional background removal, ink density optimization, and 300 DPI production exports for apparel designers.">
     
     <!-- Libraries & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -104,8 +104,17 @@
             border-radius: 50%; font-size: 14px; font-weight: bold;
         }
 
-        #canvasWrapper { cursor: grab; display: inline-block; transform-origin: center center; }
+        #canvasWrapper { cursor: grab; display: inline-block; transform-origin: center center; position: relative; }
         #canvasWrapper:active { cursor: grabbing; }
+        
+        #cropBox {
+            position: absolute;
+            border: 2px dashed var(--accent);
+            background: rgba(255, 0, 0, 0.1);
+            pointer-events: none;
+            display: none;
+            z-index: 60;
+        }
 
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #050505; }
@@ -124,6 +133,7 @@
             text-transform: uppercase;
             pointer-events: none;
             display: none;
+            z-index: 100;
         }
     </style>
 </head>
@@ -134,7 +144,7 @@
         <aside class="control-panel w-96 flex flex-col h-screen p-6 overflow-y-auto shrink-0 z-20">
             <header class="mb-6">
                 <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">LithoPrint Studio</h1>
-                <p class="text-[9px] text-zinc-500 uppercase tracking-[0.3em]">Pro Production // v4.1</p>
+                <p class="text-[9px] text-zinc-500 uppercase tracking-[0.3em]">Pro Production // v4.4</p>
             </header>
 
             <div class="space-y-4 mb-8">
@@ -144,6 +154,12 @@
                     <span>Import Asset</span>
                     <span id="fileCount" class="text-[8px] opacity-50">High-Res PNG/JPG Only</span>
                 </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="cropBtn" class="py-2 text-[8px] btn-action uppercase rounded">Crop Mode</button>
+                    <button id="applyCropBtn" class="py-2 text-[8px] btn-action uppercase rounded hidden bg-red-900 border-red-600">Apply Crop</button>
+                    <button id="mockupBtn" onclick="document.getElementById('mockupInput').click()" class="py-2 text-[8px] btn-action uppercase rounded">Add Mockup</button>
+                    <input type="file" id="mockupInput" accept="image/*" class="hidden">
+                </div>
             </div>
 
             <!-- Parameters -->
@@ -181,15 +197,15 @@
                 <!-- Text Engine -->
                 <div class="space-y-3 pt-4 border-t border-zinc-900">
                     <label class="text-[10px] uppercase font-black text-zinc-400">Litho Text Tool</label>
-                    <input type="text" id="textInput" placeholder="TYPE RE-DECISION..." class="w-full bg-black border border-zinc-800 p-2 text-[10px] uppercase text-white rounded outline-none focus:border-red-600">
+                    <input type="text" id="textInput" placeholder="ENTER PRODUCTION TEXT..." class="w-full bg-black border border-zinc-800 p-2 text-[10px] uppercase text-white rounded outline-none focus:border-red-600">
                     <select id="fontPicker" class="w-full bg-black border border-zinc-800 p-2 text-[9px] uppercase text-white rounded">
                         <option value="'Roboto Mono', monospace">Roboto Mono (Modern)</option>
-                        <option value="'Courier Prime', monospace">Courier Prime (Typewriter)</option>
+                        <option value="'Courier Prime', monospace">Courier Prime (Classic)</option>
                         <option value="'Special Elite', cursive">Special Elite (Stencil)</option>
                     </select>
                 </div>
 
-                <button id="processBtn" disabled class="w-full py-4 rounded-lg btn-primary uppercase text-xs tracking-widest disabled:opacity-20 mt-4">
+                <button id="processBtn" class="w-full py-4 rounded-lg btn-primary uppercase text-xs tracking-widest mt-4">
                     Process Production
                 </button>
             </div>
@@ -208,6 +224,7 @@
                     <button onclick="setView('white')" class="text-[9px] uppercase font-bold px-3 py-1 bg-white text-black rounded">White Shirt</button>
                     <button onclick="setView('black')" class="text-[9px] uppercase font-bold px-3 py-1 bg-zinc-900 text-white rounded">Black Shirt</button>
                     <button onclick="setView('checker')" class="text-[9px] uppercase font-bold px-3 py-1 border border-zinc-800 text-zinc-400 rounded">Checker</button>
+                    <button onclick="setView('green')" class="text-[9px] uppercase font-bold px-3 py-1 bg-green-900 text-green-200 rounded">Green Check</button>
                 </div>
                 <div class="flex items-center gap-6">
                     <div class="flex items-center gap-2">
@@ -225,6 +242,7 @@
                 <div id="canvasWrapper">
                     <canvas id="mainCanvas" class="shadow-2xl opacity-0 transition-opacity"></canvas>
                     <div id="comparisonSlider" class="hidden"></div>
+                    <div id="cropBox"></div>
                 </div>
             </div>
             
@@ -249,18 +267,19 @@
         </nav>
         <div class="max-w-3xl mx-auto py-20 px-6 space-y-24">
             <article>
-                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Technical 01</span>
-                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">Understanding PNG Metadata (The 300 DPI Rule)</h3>
+                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Production Logic</span>
+                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">Solving the 72 DPI limitation</h3>
                 <div class="text-zinc-400 text-lg leading-relaxed space-y-6">
-                    <p>When you export a graphic from a standard web browser, it defaults to 72 DPI. For professional apparel printing, this is often too low for automated RIP software. LithoPrint Studio v4.1 introduces a custom metadata injection layer. We take your processed pixel array and manually rewrite the physical dimension headers (the pHYs chunk) to force a 300 DPI reading.</p>
-                    <p>This means your file will open in Photoshop or Illustrator at the correct physical print size (e.g., 10 inches wide) rather than appearing massive. It ensures your <strong>Black Crush</strong> and <strong>Grain</strong> settings translate perfectly to the fabric without the need for manual resizing.</p>
+                    <p>Browser-based design tools traditionally struggle with print resolution because web canvases export at 72 pixels per inch (the standard for screens). When these files are sent to professional printing RIP software, they are often scaled incorrectly, resulting in "jagged" edges on fabric.</p>
+                    <p>LithoPrint Studio bypasses this limitation. Our export engine performs a pixel-by-pixel metadata rewrite of the PNG binary. We manually inject a physical dimension chunk (pHYs) that forces professional software like Photoshop or Illustrator to recognize the file at 300 DPI immediately. This ensures your grain and ink density settings translate perfectly from the screen to the shirt.</p>
                 </div>
             </article>
             <article>
-                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Entry 02</span>
-                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">The Death of the White Halo</h3>
+                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Industry Standards</span>
+                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">The Physics of the Ink Halo</h3>
                 <div class="text-zinc-400 text-lg leading-relaxed space-y-6">
-                    <p>LithoPrint Pro fixes the "white halo" issue by separating luminance from alpha. We override pixel colors to your target ink while "crushing" the density, ensuring printers only see true ink or transparency. No anti-aliasing fuzz.</p>
+                    <p>Transparent PNGs use anti-aliasing to smooth out edges. This process creates a "fringe" of semi-transparent grey pixels at the boundary of your graphic. While this looks smooth on a white digital background, it is a disaster for black t-shirt printing.</p>
+                    <p>Printers interpret these semi-transparent pixels as light colors and attempt to print a white underbase beneath them. This creates a visible "white halo" around your design. Our tool fixes this by separating color from opacity. We override every pixel to your target ink color while using the "Black Crush" engine to cauterize the edges—ensuring you have either 100% ink or 100% transparency.</p>
                 </div>
             </article>
         </div>
@@ -272,15 +291,22 @@
             <h2 class="text-lg font-black tracking-tighter uppercase italic text-white">Technical FAQ</h2>
             <a href="#" class="btn-action px-6 py-2 text-[10px] uppercase rounded">Exit to Studio</a>
         </nav>
-        <div class="max-w-2xl mx-auto py-20 px-6 space-y-12">
+        <div class="max-w-2xl mx-auto py-20 px-6 space-y-12 text-zinc-400">
             <section class="space-y-4">
-                <h4 class="text-white text-xl font-black uppercase">Does this export 300 DPI?</h4>
-                <p class="text-zinc-500 text-sm italic underline">Yes. We manually inject the 300 DPI metadata into every PNG export.</p>
-                <p class="text-zinc-500 text-sm italic">Standard canvas exports are 72 DPI. LithoPrint v4.1 rewrites the image headers so professional printing software recognizes the high-resolution density immediately.</p>
+                <h4 class="text-white text-xl font-black uppercase">Does this tool downsample my images?</h4>
+                <p class="text-sm italic">No. All processing happens at the original resolution of your file. If you upload a 4000px asset, you export a 4000px production file. We preserve every pixel for professional DTG and screen printing.</p>
             </section>
             <section class="space-y-4 border-t border-zinc-900 pt-12">
-                <h4 class="text-white text-xl font-black uppercase">What is "Black Crush"?</h4>
-                <p class="text-zinc-500 text-sm italic">It is the threshold where grey pixels are forced to become solid ink. If your text looks grey on a white shirt, increase the Black Crush to ensure 100% ink density.</p>
+                <h4 class="text-white text-xl font-black uppercase">What is the "Black Crush" setting?</h4>
+                <p class="text-sm italic">Black Crush is the opacity threshold. It takes grey or semi-transparent pixels and forces them to become 100% solid ink. Use this if your graphics look "faint" or "dusty" on a white shirt preview.</p>
+            </section>
+            <section class="space-y-4 border-t border-zinc-900 pt-12">
+                <h4 class="text-white text-xl font-black uppercase">How do I use the Crop Mode?</h4>
+                <p class="text-sm italic">Click "Crop Mode", then draw a box directly on your graphic. Once the red box matches your desired area, click the "Apply Crop" button that appears in the sidebar.</p>
+            </section>
+            <section class="space-y-4 border-t border-zinc-900 pt-12">
+                <h4 class="text-white text-xl font-black uppercase">Can I process text without an image?</h4>
+                <p class="text-sm italic">Yes. If no image is imported, the tool generates a high-resolution 3000px white slate. You can type your text, apply grain and black crush, and download it as a standalone transparent stencil.</p>
             </section>
         </div>
     </div>
@@ -309,6 +335,9 @@
             splitToggle: document.getElementById('splitToggle'),
             slider: document.getElementById('comparisonSlider'),
             pickerBtn: document.getElementById('pickerBtn'),
+            cropBtn: document.getElementById('cropBtn'),
+            applyCropBtn: document.getElementById('applyCropBtn'),
+            cropBox: document.getElementById('cropBox'),
             studioPage: document.getElementById('studioPage'),
             blogPage: document.getElementById('blogPage'),
             faqPage: document.getElementById('faqPage'),
@@ -322,43 +351,36 @@
             currentIdx: 0,
             scale: 1,
             translateX: 0, translateY: 0,
-            isDragging: false, isSliderDragging: false,
-            startX: 0, startY: 0, splitX: 0.5
+            isDragging: false, isSliderDragging: false, isCropping: false,
+            startX: 0, startY: 0, splitX: 0.5,
+            cropStartX: 0, cropStartY: 0, cropEndX: 0, cropEndY: 0
         };
 
-        // --- DPI Injection Logic ---
-        function changeDpi(blob, dpi) {
+        // --- DPI Header Rewriter ---
+        function changeDpi(blob) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = () => {
                     const arrayBuffer = reader.result;
-                    const view = new DataView(arrayBuffer);
                     const physChunk = new Uint8Array([
-                        0x00, 0x00, 0x00, 0x09, // Length
-                        0x70, 0x48, 0x59, 0x73, // Type: pHYs
-                        0x00, 0x00, 0x2e, 0x23, // 300 DPI (11811 pixels per meter)
-                        0x00, 0x00, 0x2e, 0x23, // 300 DPI
-                        0x01,                   // Meter unit
-                        0xdd, 0x71, 0xff, 0x52  // CRC (hardcoded for 300 DPI)
+                        0x00, 0x00, 0x00, 0x09, 0x70, 0x48, 0x59, 0x73, 
+                        0x00, 0x00, 0x2e, 0x23, 0x00, 0x00, 0x2e, 0x23, 
+                        0x01, 0xdd, 0x71, 0xff, 0x52  
                     ]);
-                    
                     const newBuffer = new Uint8Array(arrayBuffer.byteLength + physChunk.length);
-                    newBuffer.set(new Uint8Array(arrayBuffer.slice(0, 33)), 0); // After IHDR
+                    newBuffer.set(new Uint8Array(arrayBuffer.slice(0, 33)), 0); 
                     newBuffer.set(physChunk, 33);
                     newBuffer.set(new Uint8Array(arrayBuffer.slice(33)), 33 + physChunk.length);
-                    
                     resolve(new Blob([newBuffer], { type: 'image/png' }));
                 };
                 reader.readAsArrayBuffer(blob);
             });
         }
 
-        // --- Routing ---
+        // --- SPA Routing ---
         function handleRouting() {
             const hash = window.location.hash;
-            el.studioPage.classList.add('page-hidden');
-            el.blogPage.classList.add('page-hidden');
-            el.faqPage.classList.add('page-hidden');
+            [el.studioPage, el.blogPage, el.faqPage].forEach(p => p.classList.add('page-hidden'));
             if (hash === '#blog') el.blogPage.classList.remove('page-hidden');
             else if (hash === '#faq') el.faqPage.classList.remove('page-hidden');
             else el.studioPage.classList.remove('page-hidden');
@@ -366,7 +388,6 @@
         window.addEventListener('hashchange', handleRouting);
         window.addEventListener('load', handleRouting);
 
-        // --- Engine ---
         function hexToRgb(hex) {
             const r = parseInt(hex.slice(1, 3), 16);
             const g = parseInt(hex.slice(3, 5), 16);
@@ -377,9 +398,20 @@
         function processImage(sourceImg, config) {
             const offCanvas = document.createElement('canvas');
             const offCtx = offCanvas.getContext('2d');
-            offCanvas.width = sourceImg.width;
-            offCanvas.height = sourceImg.height;
-            offCtx.drawImage(sourceImg, 0, 0);
+            
+            if (!sourceImg) {
+                offCanvas.width = 3000; offCanvas.height = 3000;
+                offCtx.fillStyle = '#FFFFFF'; offCtx.fillRect(0,0,3000,3000);
+            } else {
+                offCanvas.width = sourceImg.width; offCanvas.height = sourceImg.height;
+                offCtx.drawImage(sourceImg, 0, 0);
+            }
+
+            if (config.text) {
+                offCtx.font = `bold ${offCanvas.width/10}px ${config.font}`;
+                offCtx.fillStyle = '#000000'; offCtx.textAlign = "center";
+                offCtx.fillText(config.text, offCanvas.width/2, offCanvas.height/2);
+            }
 
             let imageData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
             let data = imageData.data;
@@ -388,6 +420,7 @@
             for (let i = 0; i < data.length; i += 4) {
                 const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
                 data[i] = ink.r; data[i+1] = ink.g; data[i+2] = ink.b;
+
                 if (brightness >= config.tolerance) {
                     data[i + 3] = 0;
                 } else {
@@ -396,28 +429,23 @@
                         alpha = ((config.tolerance - brightness) / (config.tolerance - config.crush)) * 255;
                     }
                     if (config.grain > 0 && alpha > 0) {
-                        const rand = (Math.random() - 0.5) * config.grain * 2;
-                        alpha = Math.min(255, Math.max(0, alpha + rand));
+                        alpha = Math.min(255, Math.max(0, alpha + (Math.random() - 0.5) * config.grain * 2));
                     }
                     data[i + 3] = alpha;
                 }
             }
             offCtx.putImageData(imageData, 0, 0);
-
-            if (config.text) {
-                offCtx.font = `bold ${offCanvas.width/10}px ${config.font}`;
-                offCtx.fillStyle = config.inkColor;
-                offCtx.textAlign = "center";
-                offCtx.fillText(config.text, offCanvas.width/2, offCanvas.height/2);
-            }
             return offCanvas;
         }
 
         function render() {
-            if (!state.originalImages[state.currentIdx]) return;
+            const source = state.originalImages[state.currentIdx]?.img || null;
+            if (!source && !el.textInput.value) {
+                el.mainCanvas.classList.add('opacity-0');
+                return;
+            }
             el.overlay.style.display = 'block';
             setTimeout(() => {
-                const source = state.originalImages[state.currentIdx].img;
                 const config = {
                     tolerance: parseInt(el.tolerance.value),
                     crush: parseInt(el.blackCrush.value),
@@ -427,8 +455,9 @@
                     font: el.fontPicker.value
                 };
                 const result = processImage(source, config);
-                el.mainCanvas.width = source.width; el.mainCanvas.height = source.height;
-                if (el.splitToggle.checked) {
+                el.mainCanvas.width = result.width; el.mainCanvas.height = result.height;
+                
+                if (el.splitToggle.checked && source) {
                     ctx.drawImage(source, 0, 0);
                     const splitPixel = el.mainCanvas.width * state.splitX;
                     ctx.save(); ctx.beginPath(); ctx.rect(0, 0, splitPixel, el.mainCanvas.height); ctx.clip();
@@ -438,47 +467,77 @@
                     ctx.drawImage(result, 0, 0); el.slider.style.display = 'none';
                 }
                 el.overlay.style.display = 'none';
-                el.downloadBtn.disabled = false;
-                el.batchBtn.disabled = state.originalImages.length < 2;
+                el.downloadBtn.disabled = false; el.mainCanvas.classList.remove('opacity-0');
             }, 10);
         }
 
-        // --- Interaction ---
         el.imageInput.onchange = async (e) => {
-            const files = Array.from(e.target.files);
-            if (!files.length) return;
+            const files = Array.from(e.target.files); if (!files.length) return;
             state.originalImages = [];
             for (const f of files) {
                 const img = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = URL.createObjectURL(f); });
                 state.originalImages.push({ file: f, img });
             }
-            document.getElementById('fileCount').textContent = `${files.length} ASSETS LOADED`;
-            el.processBtn.disabled = false;
-            el.mainCanvas.classList.remove('opacity-0');
+            document.getElementById('fileCount').textContent = `${files.length} ASSETS`;
             render();
         };
 
-        el.zoomScale.oninput = () => {
-            state.scale = parseFloat(el.zoomScale.value);
-            el.zoomVal.textContent = state.scale.toFixed(2) + 'x';
-            el.canvasWrapper.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`;
+        el.cropBtn.onclick = () => {
+            state.isCropping = !state.isCropping;
+            el.cropBtn.classList.toggle('bg-red-600');
+            el.cropBtn.textContent = state.isCropping ? "Cancel Crop" : "Crop Mode";
+            if(!state.isCropping) { el.cropBox.style.display = 'none'; el.applyCropBtn.classList.add('hidden'); }
+        };
+
+        el.applyCropBtn.onclick = () => {
+            const img = state.originalImages[state.currentIdx].img;
+            const rect = el.mainCanvas.getBoundingClientRect();
+            const left = (state.cropStartX) / state.scale;
+            const top = (state.cropStartY) / state.scale;
+            const width = (state.cropEndX - state.cropStartX) / state.scale;
+            const height = (state.cropEndY - state.cropStartY) / state.scale;
+
+            const temp = document.createElement('canvas');
+            temp.width = width; temp.height = height;
+            temp.getContext('2d').drawImage(img, left, top, width, height, 0, 0, width, height);
+            
+            const newImg = new Image();
+            newImg.onload = () => {
+                state.originalImages[state.currentIdx].img = newImg;
+                state.isCropping = false; el.cropBox.style.display = 'none';
+                el.applyCropBtn.classList.add('hidden'); el.cropBtn.textContent = "Crop Mode";
+                el.cropBtn.classList.remove('bg-red-600'); render();
+            };
+            newImg.src = temp.toDataURL();
         };
 
         el.canvasContainer.onmousedown = (e) => {
+            if (state.isCropping) {
+                const rect = el.mainCanvas.getBoundingClientRect();
+                state.cropStartX = (e.clientX - rect.left) / state.scale;
+                state.cropStartY = (e.clientY - rect.top) / state.scale;
+                el.cropBox.style.left = (state.cropStartX * state.scale) + 'px';
+                el.cropBox.style.top = (state.cropStartY * state.scale) + 'px';
+                el.cropBox.style.width = '0px'; el.cropBox.style.height = '0px';
+                el.cropBox.style.display = 'block'; return;
+            }
             if (e.target === el.slider) { state.isSliderDragging = true; return; }
-            state.isDragging = true;
-            state.startX = e.clientX - state.translateX;
-            state.startY = e.clientY - state.translateY;
+            state.isDragging = true; state.startX = e.clientX - state.translateX; state.startY = e.clientY - state.translateY;
         };
 
         window.onmousemove = (e) => {
-            if (state.isSliderDragging) {
-                const r = el.canvasWrapper.getBoundingClientRect();
-                state.splitX = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1);
-                render();
+            if (state.isCropping && e.buttons === 1) {
+                const rect = el.mainCanvas.getBoundingClientRect();
+                state.cropEndX = (e.clientX - rect.left) / state.scale;
+                state.cropEndY = (e.clientY - rect.top) / state.scale;
+                el.cropBox.style.width = ((state.cropEndX - state.cropStartX) * state.scale) + 'px';
+                el.cropBox.style.height = ((state.cropEndY - state.cropStartY) * state.scale) + 'px';
+                el.applyCropBtn.classList.remove('hidden');
+            } else if (state.isSliderDragging) {
+                const r = el.mainCanvas.getBoundingClientRect();
+                state.splitX = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1); render();
             } else if (state.isDragging) {
-                state.translateX = e.clientX - state.startX;
-                state.translateY = e.clientY - state.startY;
+                state.translateX = e.clientX - state.startX; state.translateY = e.clientY - state.startY;
                 el.canvasWrapper.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`;
             }
         };
@@ -490,35 +549,24 @@
         });
 
         el.processBtn.onclick = render;
-        el.splitToggle.onchange = render;
-
         el.downloadBtn.onclick = async () => {
-            const config = { 
-                tolerance: parseInt(el.tolerance.value), 
-                crush: parseInt(el.blackCrush.value), 
-                grain: parseInt(el.grain.value), 
-                inkColor: el.inkColor.value,
-                text: el.textInput.value,
-                font: el.fontPicker.value
-            };
-            const final = processImage(state.originalImages[state.currentIdx].img, config);
-            
-            // Step 1: Get standard blob
+            const config = { tolerance: parseInt(el.tolerance.value), crush: parseInt(el.blackCrush.value), grain: parseInt(el.grain.value), inkColor: el.inkColor.value, text: el.textInput.value, font: el.fontPicker.value };
+            const final = processImage(state.originalImages[state.currentIdx]?.img || null, config);
             final.toBlob(async (blob) => {
-                // Step 2: Inject 300 DPI metadata
-                const dpiBlob = await changeDpi(blob, 300);
-                const link = document.createElement('a');
-                link.download = `litho_300dpi_${Date.now()}.png`;
-                link.href = URL.createObjectURL(dpiBlob);
-                link.click();
+                const dpiBlob = await changeDpi(blob);
+                const link = document.createElement('a'); link.download = `production_300dpi_${Date.now()}.png`;
+                link.href = URL.createObjectURL(dpiBlob); link.click();
             }, 'image/png');
         };
 
+        el.zoomScale.oninput = () => {
+            state.scale = parseFloat(el.zoomScale.value);
+            el.zoomVal.textContent = state.scale.toFixed(2) + 'x';
+            el.canvasWrapper.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`;
+        };
+
         function setView(mode) {
-            el.canvasContainer.classList.remove('checkerboard', 'black-shirt', 'white-shirt');
-            if (mode === 'checker') el.canvasContainer.classList.add('checkerboard');
-            else if (mode === 'black') el.canvasContainer.classList.add('black-shirt');
-            else if (mode === 'white') el.canvasContainer.classList.add('white-shirt');
+            el.canvasContainer.className = `flex-grow relative overflow-hidden flex items-center justify-center ${mode === 'checker' ? 'checkerboard' : mode + '-shirt'}`;
         }
     </script>
 </body>
