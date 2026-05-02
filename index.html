@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LithoPrint Studio v4.4 | Pro Production Suite</title>
+    <title>LithoPrint Studio v4.8 | Pro Production Suite</title>
     
     <!-- SEO & Metadata -->
     <meta name="description" content="Professional background removal, ink density optimization, and 300 DPI production exports for apparel designers.">
@@ -11,7 +11,7 @@
     <!-- Libraries & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;700;900&family=Roboto+Mono:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;700;900&family=Roboto+Mono:wght@400;700&family=Special+Elite&family=Bebas+Neue&family=IM+Fell+English+SC&family=Montserrat:wght@100..900&family=Oswald:wght@200..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lato:wght@100..900&family=Open+Sans:wght@300..800&family=Raleway:wght@100..900&family=Poppins:wght@100..900&family=Merriweather:wght@300..900&family=Source+Sans+3:wght@200..900&family=Ubuntu:wght@300..700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -30,15 +30,15 @@
         }
         
         .checkerboard {
-            background-image: linear-gradient(45deg, #111 25%, transparent 25%), 
-                              linear-gradient(-45deg, #111 25%, transparent 25%), 
-                              linear-gradient(45deg, transparent 75%, #111 75%), 
-                              linear-gradient(-45deg, transparent 75%, #111 75%);
-            background-size: 20px 20px; background-color: #080808;
+            background-image: linear-gradient(45deg, #f7f7f7 25%, transparent 25%), 
+                              linear-gradient(-45deg, #f7f7f7 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #f7f7f7 75%), 
+                              linear-gradient(-45deg, transparent 75%, #f7f7f7 75%);
+            background-size: 20px 20px; background-color: #fff;
         }
         .white-shirt { background-color: #ffffff !important; background-image: none !important; }
         .black-shirt { background-color: #0d0d0d !important; background-image: none !important; }
-        .green-screen { background-color: #00ff00 !important; background-image: none !important; }
+        .green-screen-active { background-color: #00FF00 !important; background-image: none !important; }
         
         input[type=range] { 
             accent-color: var(--accent); 
@@ -107,15 +107,6 @@
         #canvasWrapper { cursor: grab; display: inline-block; transform-origin: center center; position: relative; }
         #canvasWrapper:active { cursor: grabbing; }
         
-        #cropBox {
-            position: absolute;
-            border: 2px dashed var(--accent);
-            background: rgba(255, 0, 0, 0.1);
-            pointer-events: none;
-            display: none;
-            z-index: 60;
-        }
-
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #050505; }
         ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
@@ -135,6 +126,14 @@
             display: none;
             z-index: 100;
         }
+
+        .ui-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 900;
+            color: #71717a; /* zinc-400ish */
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
@@ -142,22 +141,26 @@
     <!-- STUDIO VIEW -->
     <div id="studioPage" class="w-full flex">
         <aside class="control-panel w-96 flex flex-col h-screen p-6 overflow-y-auto shrink-0 z-20">
-            <header class="mb-6">
-                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">LithoPrint Studio</h1>
-                <p class="text-[9px] text-zinc-500 uppercase tracking-[0.3em]">Pro Production // v4.4</p>
+            <header class="mb-6 flex justify-between items-start">
+                <div>
+                    <h1 class="text-xl font-black italic tracking-tighter text-white uppercase leading-none">LithoPrint Studio</h1>
+                    <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Production Suite // v4.8</p>
+                </div>
+                <button id="clearAllBtn" class="text-[8px] bg-zinc-800 px-2 py-1 uppercase font-bold hover:bg-red-600 transition-colors rounded">Reset Slate</button>
             </header>
 
+            <!-- Asset Import -->
             <div class="space-y-4 mb-8">
                 <input type="file" id="imageInput" accept="image/*" multiple class="hidden">
                 <button onclick="document.getElementById('imageInput').click()" 
                     class="w-full py-4 border-2 border-dashed border-zinc-800 rounded-lg hover:border-red-600 hover:bg-zinc-900 transition-all text-[10px] uppercase font-bold tracking-widest text-zinc-400 flex flex-col items-center gap-1">
-                    <span>Import Asset</span>
-                    <span id="fileCount" class="text-[8px] opacity-50">High-Res PNG/JPG Only</span>
+                    <span>Import Production Asset</span>
+                    <span id="fileCount" class="text-[8px] opacity-50">Single or Multiple Files</span>
                 </button>
                 <div class="grid grid-cols-2 gap-2">
                     <button id="cropBtn" class="py-2 text-[8px] btn-action uppercase rounded">Crop Mode</button>
                     <button id="applyCropBtn" class="py-2 text-[8px] btn-action uppercase rounded hidden bg-red-900 border-red-600">Apply Crop</button>
-                    <button id="mockupBtn" onclick="document.getElementById('mockupInput').click()" class="py-2 text-[8px] btn-action uppercase rounded">Add Mockup</button>
+                    <button onclick="document.getElementById('mockupInput').click()" class="py-2 text-[8px] btn-action uppercase rounded">Add Mockup</button>
                     <input type="file" id="mockupInput" accept="image/*" class="hidden">
                 </div>
             </div>
@@ -166,65 +169,114 @@
             <div class="space-y-6 flex-grow">
                 <div class="space-y-4">
                     <div class="flex justify-between items-baseline">
-                        <label class="text-[10px] uppercase font-black text-zinc-400">1. Cutoff Range</label>
+                        <label class="ui-label">1. Cutoff Range</label>
                         <div class="flex gap-2">
-                            <button id="pickerBtn" class="text-[10px] px-2 border border-zinc-800 hover:text-red-500">Pick</button>
+                            <button id="pickerBtn" class="text-[9px] px-2 border border-zinc-800 hover:text-red-500 rounded">Eye Drop</button>
                             <span id="tolValue" class="text-xs font-bold text-red-500">240</span>
                         </div>
                     </div>
                     <input type="range" id="tolerance" min="100" max="255" value="240">
                     
                     <div class="flex justify-between items-baseline">
-                        <label class="text-[10px] uppercase font-black text-white">2. Black Crush (Density)</label>
+                        <label class="ui-label text-white">2. Black Crush (Density)</label>
                         <span id="crushValue" class="text-xs font-bold text-red-500">80</span>
                     </div>
                     <input type="range" id="blackCrush" min="0" max="255" value="80">
                 </div>
 
+                <!-- Ink Color & Grain Engine -->
                 <div class="space-y-4 pt-4 border-t border-zinc-900">
                     <div class="flex justify-between items-baseline">
-                        <label class="text-[10px] uppercase font-black text-zinc-500">3. Grain Engine</label>
+                        <label class="ui-label">3. Grain Engine</label>
                         <span id="grainValue" class="text-xs font-bold text-red-500">0</span>
                     </div>
                     <input type="range" id="grain" min="0" max="100" value="0">
 
-                    <div class="flex justify-between items-center bg-zinc-900/50 p-3 rounded border border-zinc-800">
-                        <label class="text-[10px] uppercase font-bold text-zinc-400">Ink Color</label>
-                        <input type="color" id="inkColor" value="#000000" class="w-8 h-8 bg-transparent border-0 cursor-pointer">
+                    <div class="bg-zinc-900/40 p-3 rounded border border-zinc-800 space-y-3">
+                        <label class="ui-label text-zinc-500 block">Production Ink Color</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="color" id="inkColor" value="#000000" class="w-10 h-10 bg-transparent border-0 cursor-pointer shrink-0">
+                            <input type="text" id="inkHex" placeholder="#000000" class="flex-grow bg-black border border-zinc-800 p-2 text-[10px] text-white uppercase outline-none font-bold rounded text-center" maxlength="7">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Text Engine -->
-                <div class="space-y-3 pt-4 border-t border-zinc-900">
-                    <label class="text-[10px] uppercase font-black text-zinc-400">Litho Text Tool</label>
-                    <input type="text" id="textInput" placeholder="ENTER PRODUCTION TEXT..." class="w-full bg-black border border-zinc-800 p-2 text-[10px] uppercase text-white rounded outline-none focus:border-red-600">
-                    <select id="fontPicker" class="w-full bg-black border border-zinc-800 p-2 text-[9px] uppercase text-white rounded">
-                        <option value="'Roboto Mono', monospace">Roboto Mono (Modern)</option>
-                        <option value="'Courier Prime', monospace">Courier Prime (Classic)</option>
-                        <option value="'Special Elite', cursive">Special Elite (Stencil)</option>
-                    </select>
+                <!-- Pro Typography Tool -->
+                <div class="space-y-4 pt-4 border-t border-zinc-900">
+                    <label class="ui-label">4. Litho Typography Tool</label>
+                    <textarea id="textInput" placeholder="ENTER PRODUCTION SLOGAN..." class="w-full bg-black border border-zinc-800 p-3 text-[10px] uppercase text-white rounded outline-none focus:border-red-600 h-16 resize-none font-bold"></textarea>
+                    
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1">
+                                <label class="text-[8px] uppercase font-bold text-zinc-600">Font Family</label>
+                                <select id="fontPicker" class="w-full bg-black border border-zinc-800 p-2 text-[9px] uppercase text-white rounded outline-none focus:border-zinc-500">
+                                    <optgroup label="Essential Stencils">
+                                        <option value="'Roboto Mono'">Roboto Mono</option>
+                                        <option value="'Courier Prime'">Courier Prime</option>
+                                        <option value="'Special Elite'">Stencil Grunge</option>
+                                    </optgroup>
+                                    <optgroup label="Popular Production Fonts">
+                                        <option value="'Montserrat'">Montserrat</option>
+                                        <option value="'Oswald'">Oswald</option>
+                                        <option value="'Playfair Display'">Playfair</option>
+                                        <option value="'Poppins'">Poppins</option>
+                                        <option value="'Raleway'">Raleway</option>
+                                        <option value="'Open Sans'">Open Sans</option>
+                                        <option value="'Lato'">Lato</option>
+                                        <option value="'Merriweather'">Merriweather</option>
+                                        <option value="'Source Sans 3'">Source Sans</option>
+                                        <option value="'Bebas Neue'">Bebas Neue</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[8px] uppercase font-bold text-zinc-600">Line Style</label>
+                                <select id="textEffect" class="w-full bg-black border border-zinc-800 p-2 text-[9px] uppercase text-white rounded outline-none focus:border-zinc-500">
+                                    <option value="none">Straight</option>
+                                    <option value="curve">Arc Curve</option>
+                                    <option value="wave">Wave Distortion</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="space-y-1">
+                                <label class="text-[8px] uppercase font-bold text-zinc-600">Weight</label>
+                                <input type="range" id="fontWeight" min="100" max="900" step="100" value="700">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[8px] uppercase font-bold text-zinc-600">Spacing</label>
+                                <input type="range" id="letterSpacing" min="-10" max="50" value="0">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[8px] uppercase font-bold text-zinc-600">Strength</label>
+                                <input type="range" id="effectStrength" min="-100" max="100" value="30">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <button id="processBtn" class="w-full py-4 rounded-lg btn-primary uppercase text-xs tracking-widest mt-4">
+                <button id="processBtn" class="w-full py-4 rounded-lg btn-primary uppercase text-xs tracking-[0.2em] mt-4 font-black shadow-lg">
                     Process Production
                 </button>
             </div>
 
             <div class="mt-8 space-y-4 pt-6 border-t border-zinc-900">
                 <a href="https://buymeacoffee.com/BUILT_BY_LIAM" target="_blank" class="w-full flex items-center justify-center gap-3 py-3 bg-zinc-100 hover:bg-yellow-400 text-black rounded font-black text-[10px] uppercase transition-all">
-                    Support the Dev
+                    Support Development
                 </a>
             </div>
         </aside>
 
         <main class="flex-grow flex flex-col relative overflow-hidden bg-zinc-900">
             <div id="processingOverlay">Rendering High-Res...</div>
-            <nav class="h-14 border-b border-zinc-900 flex items-center justify-between px-6 bg-black z-30">
+            <nav class="h-14 border-b border-zinc-900 flex items-center justify-between px-6 bg-black z-30 shadow-xl">
                 <div class="flex gap-2">
                     <button onclick="setView('white')" class="text-[9px] uppercase font-bold px-3 py-1 bg-white text-black rounded">White Shirt</button>
                     <button onclick="setView('black')" class="text-[9px] uppercase font-bold px-3 py-1 bg-zinc-900 text-white rounded">Black Shirt</button>
                     <button onclick="setView('checker')" class="text-[9px] uppercase font-bold px-3 py-1 border border-zinc-800 text-zinc-400 rounded">Checker</button>
-                    <button onclick="setView('green')" class="text-[9px] uppercase font-bold px-3 py-1 bg-green-900 text-green-200 rounded">Green Check</button>
+                    <button onclick="setView('green')" class="text-[9px] uppercase font-bold px-3 py-1 bg-[#00FF00] text-black rounded">Green Check</button>
                 </div>
                 <div class="flex items-center gap-6">
                     <div class="flex items-center gap-2">
@@ -267,19 +319,17 @@
         </nav>
         <div class="max-w-3xl mx-auto py-20 px-6 space-y-24">
             <article>
-                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Production Logic</span>
-                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">Solving the 72 DPI limitation</h3>
+                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Type Theory 01</span>
+                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">The Psychology of the Stencil</h3>
                 <div class="text-zinc-400 text-lg leading-relaxed space-y-6">
-                    <p>Browser-based design tools traditionally struggle with print resolution because web canvases export at 72 pixels per inch (the standard for screens). When these files are sent to professional printing RIP software, they are often scaled incorrectly, resulting in "jagged" edges on fabric.</p>
-                    <p>LithoPrint Studio bypasses this limitation. Our export engine performs a pixel-by-pixel metadata rewrite of the PNG binary. We manually inject a physical dimension chunk (pHYs) that forces professional software like Photoshop or Illustrator to recognize the file at 300 DPI immediately. This ensures your grain and ink density settings translate perfectly from the screen to the shirt.</p>
+                    <p>Typography is the skeleton of apparel design. A simple phrase like "PRODUCE" takes on different weights depending on its container. v4.8 allows you to arc and wave standard production fonts, mimicking the physical distortion found in low-quality photocopy stencils or warped screen meshes.</p>
                 </div>
             </article>
             <article>
-                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Industry Standards</span>
-                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">The Physics of the Ink Halo</h3>
+                <span class="text-red-600 text-[10px] font-black uppercase tracking-widest">Industry 02</span>
+                <h3 class="text-5xl font-black text-white uppercase tracking-tighter mt-4 mb-8">DPI vs. Physical Scale</h3>
                 <div class="text-zinc-400 text-lg leading-relaxed space-y-6">
-                    <p>Transparent PNGs use anti-aliasing to smooth out edges. This process creates a "fringe" of semi-transparent grey pixels at the boundary of your graphic. While this looks smooth on a white digital background, it is a disaster for black t-shirt printing.</p>
-                    <p>Printers interpret these semi-transparent pixels as light colors and attempt to print a white underbase beneath them. This creates a visible "white halo" around your design. Our tool fixes this by separating color from opacity. We override every pixel to your target ink color while using the "Black Crush" engine to cauterize the edges—ensuring you have either 100% ink or 100% transparency.</p>
+                    <p>Standard canvas tools export at 72 DPI, which represents screen density. LithoPrint Pro manually rewrites the metadata of your PNG so it opens in professional software at 300 DPI. This ensures that a 3000px design prints at exactly 10 inches wide at full resolution.</p>
                 </div>
             </article>
         </div>
@@ -293,20 +343,12 @@
         </nav>
         <div class="max-w-2xl mx-auto py-20 px-6 space-y-12 text-zinc-400">
             <section class="space-y-4">
-                <h4 class="text-white text-xl font-black uppercase">Does this tool downsample my images?</h4>
-                <p class="text-sm italic">No. All processing happens at the original resolution of your file. If you upload a 4000px asset, you export a 4000px production file. We preserve every pixel for professional DTG and screen printing.</p>
+                <h4 class="text-white text-xl font-black uppercase">How do I Curve text?</h4>
+                <p class="text-sm italic">Select "Arc Curve" from the line style dropdown next to the font selection. Use the "Effect Strength" slider to adjust the bend. Positive numbers arc the text upwards; negative numbers arc it downwards.</p>
             </section>
             <section class="space-y-4 border-t border-zinc-900 pt-12">
-                <h4 class="text-white text-xl font-black uppercase">What is the "Black Crush" setting?</h4>
-                <p class="text-sm italic">Black Crush is the opacity threshold. It takes grey or semi-transparent pixels and forces them to become 100% solid ink. Use this if your graphics look "faint" or "dusty" on a white shirt preview.</p>
-            </section>
-            <section class="space-y-4 border-t border-zinc-900 pt-12">
-                <h4 class="text-white text-xl font-black uppercase">How do I use the Crop Mode?</h4>
-                <p class="text-sm italic">Click "Crop Mode", then draw a box directly on your graphic. Once the red box matches your desired area, click the "Apply Crop" button that appears in the sidebar.</p>
-            </section>
-            <section class="space-y-4 border-t border-zinc-900 pt-12">
-                <h4 class="text-white text-xl font-black uppercase">Can I process text without an image?</h4>
-                <p class="text-sm italic">Yes. If no image is imported, the tool generates a high-resolution 3000px white slate. You can type your text, apply grain and black crush, and download it as a standalone transparent stencil.</p>
+                <h4 class="text-white text-xl font-black uppercase">Can I use specific Pantone Hex codes?</h4>
+                <p class="text-sm italic">Yes. Use the text box inside the "Production Ink Color" block to paste any 6-digit hex code. This ensures your stencil exports match your target ink batch exactly.</p>
             </section>
         </div>
     </div>
@@ -319,8 +361,13 @@
             blackCrush: document.getElementById('blackCrush'),
             grain: document.getElementById('grain'),
             inkColor: document.getElementById('inkColor'),
+            inkHex: document.getElementById('inkHex'),
             textInput: document.getElementById('textInput'),
             fontPicker: document.getElementById('fontPicker'),
+            letterSpacing: document.getElementById('letterSpacing'),
+            fontWeight: document.getElementById('fontWeight'),
+            textEffect: document.getElementById('textEffect'),
+            effectStrength: document.getElementById('effectStrength'),
             tolVal: document.getElementById('tolValue'),
             crushVal: document.getElementById('crushValue'),
             grainVal: document.getElementById('grainValue'),
@@ -341,7 +388,8 @@
             studioPage: document.getElementById('studioPage'),
             blogPage: document.getElementById('blogPage'),
             faqPage: document.getElementById('faqPage'),
-            overlay: document.getElementById('processingOverlay')
+            overlay: document.getElementById('processingOverlay'),
+            clearAllBtn: document.getElementById('clearAllBtn')
         };
 
         const ctx = el.mainCanvas.getContext('2d', { willReadFrequently: true });
@@ -356,17 +404,13 @@
             cropStartX: 0, cropStartY: 0, cropEndX: 0, cropEndY: 0
         };
 
-        // --- DPI Header Rewriter ---
+        // --- DPI Injection ---
         function changeDpi(blob) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = () => {
                     const arrayBuffer = reader.result;
-                    const physChunk = new Uint8Array([
-                        0x00, 0x00, 0x00, 0x09, 0x70, 0x48, 0x59, 0x73, 
-                        0x00, 0x00, 0x2e, 0x23, 0x00, 0x00, 0x2e, 0x23, 
-                        0x01, 0xdd, 0x71, 0xff, 0x52  
-                    ]);
+                    const physChunk = new Uint8Array([0x00,0x00,0x00,0x09,0x70,0x48,0x59,0x73,0x00,0x00,0x2e,0x23,0x00,0x00,0x2e,0x23,0x01,0xdd,0x71,0xff,0x52]);
                     const newBuffer = new Uint8Array(arrayBuffer.byteLength + physChunk.length);
                     newBuffer.set(new Uint8Array(arrayBuffer.slice(0, 33)), 0); 
                     newBuffer.set(physChunk, 33);
@@ -377,7 +421,7 @@
             });
         }
 
-        // --- SPA Routing ---
+        // --- Routing ---
         function handleRouting() {
             const hash = window.location.hash;
             [el.studioPage, el.blogPage, el.faqPage].forEach(p => p.classList.add('page-hidden'));
@@ -388,6 +432,14 @@
         window.addEventListener('hashchange', handleRouting);
         window.addEventListener('load', handleRouting);
 
+        // --- Color Sync ---
+        el.inkColor.oninput = () => { el.inkHex.value = el.inkColor.value.toUpperCase(); if(!el.splitToggle.checked) render(); };
+        el.inkHex.oninput = () => { 
+            let val = el.inkHex.value;
+            if(!val.startsWith('#')) val = '#' + val;
+            if(/^#[0-9A-F]{6}$/i.test(val)) { el.inkColor.value = val; if(!el.splitToggle.checked) render(); }
+        };
+
         function hexToRgb(hex) {
             const r = parseInt(hex.slice(1, 3), 16);
             const g = parseInt(hex.slice(3, 5), 16);
@@ -395,42 +447,74 @@
             return { r, g, b };
         }
 
+        function drawTextAdvanced(ctx, text, width, height, config) {
+            const fontSize = width / 12;
+            const lines = text.split('\n');
+            const spacing = parseInt(el.letterSpacing.value);
+            const weight = el.fontWeight.value;
+            ctx.font = `${weight} ${fontSize}px ${config.font}`;
+            ctx.fillStyle = '#000000';
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            const strength = config.strength / 100;
+
+            lines.forEach((line, lineIdx) => {
+                const yOffset = (lineIdx - (lines.length - 1) / 2) * (fontSize * 1.3);
+                const baseY = height / 2 + yOffset;
+
+                if (config.effect === 'none') {
+                    if(spacing === 0) ctx.fillText(line, width/2, baseY);
+                    else drawLetterSpacing(ctx, line, width/2, baseY, spacing);
+                } else if (config.effect === 'curve') {
+                    const chars = line.split('');
+                    const totalW = ctx.measureText(line).width + (chars.length * spacing);
+                    const radius = Math.abs(width / (strength || 0.01));
+                    const startAngle = strength > 0 ? -Math.PI/2 - (totalW/2/radius) : Math.PI/2 - (totalW/2/radius);
+                    chars.forEach((char, i) => {
+                        const angle = startAngle + (i / chars.length) * (totalW / radius);
+                        const x = width/2 + Math.cos(angle) * radius;
+                        const y = (height/2 + (strength > 0 ? radius : -radius)) + Math.sin(angle) * radius + yOffset;
+                        ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI/2); ctx.fillText(char, 0, 0); ctx.restore();
+                    });
+                } else if (config.effect === 'wave') {
+                    const chars = line.split('');
+                    const totalW = ctx.measureText(line).width + (chars.length * spacing);
+                    let curX = width/2 - totalW/2;
+                    chars.forEach((char, i) => {
+                        const waveY = baseY + Math.sin(i * 0.5) * (strength * 100);
+                        ctx.fillText(char, curX, waveY);
+                        curX += ctx.measureText(char).width + spacing;
+                    });
+                }
+            });
+        }
+
+        function drawLetterSpacing(ctx, text, x, y, spacing) {
+            const chars = text.split('');
+            const totalWidth = ctx.measureText(text).width + (chars.length - 1) * spacing;
+            let currentX = x - totalWidth / 2;
+            chars.forEach(char => { ctx.fillText(char, currentX + ctx.measureText(char).width/2, y); currentX += ctx.measureText(char).width + spacing; });
+        }
+
         function processImage(sourceImg, config) {
             const offCanvas = document.createElement('canvas');
             const offCtx = offCanvas.getContext('2d');
-            
             if (!sourceImg) {
                 offCanvas.width = 3000; offCanvas.height = 3000;
                 offCtx.fillStyle = '#FFFFFF'; offCtx.fillRect(0,0,3000,3000);
-            } else {
-                offCanvas.width = sourceImg.width; offCanvas.height = sourceImg.height;
-                offCtx.drawImage(sourceImg, 0, 0);
-            }
-
-            if (config.text) {
-                offCtx.font = `bold ${offCanvas.width/10}px ${config.font}`;
-                offCtx.fillStyle = '#000000'; offCtx.textAlign = "center";
-                offCtx.fillText(config.text, offCanvas.width/2, offCanvas.height/2);
-            }
-
+            } else { offCanvas.width = sourceImg.width; offCanvas.height = sourceImg.height; offCtx.drawImage(sourceImg, 0, 0); }
+            if (config.text) drawTextAdvanced(offCtx, config.text, offCanvas.width, offCanvas.height, config);
             let imageData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
             let data = imageData.data;
             const ink = hexToRgb(config.inkColor);
-
             for (let i = 0; i < data.length; i += 4) {
                 const brightness = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
                 data[i] = ink.r; data[i+1] = ink.g; data[i+2] = ink.b;
-
-                if (brightness >= config.tolerance) {
-                    data[i + 3] = 0;
-                } else {
+                if (brightness >= config.tolerance) data[i + 3] = 0;
+                else {
                     let alpha = 255;
-                    if (brightness > config.crush) {
-                        alpha = ((config.tolerance - brightness) / (config.tolerance - config.crush)) * 255;
-                    }
-                    if (config.grain > 0 && alpha > 0) {
-                        alpha = Math.min(255, Math.max(0, alpha + (Math.random() - 0.5) * config.grain * 2));
-                    }
+                    if (brightness > config.crush) alpha = ((config.tolerance - brightness) / (config.tolerance - config.crush)) * 255;
+                    if (config.grain > 0 && alpha > 0) alpha = Math.min(255, Math.max(0, alpha + (Math.random() - 0.5) * config.grain * 2));
                     data[i + 3] = alpha;
                 }
             }
@@ -440,10 +524,7 @@
 
         function render() {
             const source = state.originalImages[state.currentIdx]?.img || null;
-            if (!source && !el.textInput.value) {
-                el.mainCanvas.classList.add('opacity-0');
-                return;
-            }
+            if (!source && !el.textInput.value) { el.mainCanvas.classList.add('opacity-0'); return; }
             el.overlay.style.display = 'block';
             setTimeout(() => {
                 const config = {
@@ -452,22 +533,20 @@
                     grain: parseInt(el.grain.value),
                     inkColor: el.inkColor.value,
                     text: el.textInput.value,
-                    font: el.fontPicker.value
+                    font: el.fontPicker.value,
+                    effect: el.textEffect.value,
+                    strength: parseInt(el.effectStrength.value)
                 };
                 const result = processImage(source, config);
                 el.mainCanvas.width = result.width; el.mainCanvas.height = result.height;
-                
                 if (el.splitToggle.checked && source) {
                     ctx.drawImage(source, 0, 0);
                     const splitPixel = el.mainCanvas.width * state.splitX;
                     ctx.save(); ctx.beginPath(); ctx.rect(0, 0, splitPixel, el.mainCanvas.height); ctx.clip();
                     ctx.drawImage(result, 0, 0); ctx.restore();
                     el.slider.style.display = 'block'; el.slider.style.left = (state.splitX * 100) + '%';
-                } else {
-                    ctx.drawImage(result, 0, 0); el.slider.style.display = 'none';
-                }
-                el.overlay.style.display = 'none';
-                el.downloadBtn.disabled = false; el.mainCanvas.classList.remove('opacity-0');
+                } else { ctx.drawImage(result, 0, 0); el.slider.style.display = 'none'; }
+                el.overlay.style.display = 'none'; el.downloadBtn.disabled = false; el.mainCanvas.classList.remove('opacity-0');
             }, 10);
         }
 
@@ -479,28 +558,27 @@
                 state.originalImages.push({ file: f, img });
             }
             document.getElementById('fileCount').textContent = `${files.length} ASSETS`;
-            render();
+            fitToScreen(); render();
+        };
+
+        el.clearAllBtn.onclick = () => {
+            state.originalImages = []; el.textInput.value = '';
+            document.getElementById('fileCount').textContent = 'Single or Multiple Files';
+            el.mainCanvas.classList.add('opacity-0'); el.downloadBtn.disabled = true; render();
         };
 
         el.cropBtn.onclick = () => {
             state.isCropping = !state.isCropping;
-            el.cropBtn.classList.toggle('bg-red-600');
-            el.cropBtn.textContent = state.isCropping ? "Cancel Crop" : "Crop Mode";
+            el.cropBtn.classList.toggle('bg-red-600'); el.cropBtn.textContent = state.isCropping ? "Cancel Crop" : "Crop Mode";
             if(!state.isCropping) { el.cropBox.style.display = 'none'; el.applyCropBtn.classList.add('hidden'); }
         };
 
         el.applyCropBtn.onclick = () => {
             const img = state.originalImages[state.currentIdx].img;
-            const rect = el.mainCanvas.getBoundingClientRect();
-            const left = (state.cropStartX) / state.scale;
-            const top = (state.cropStartY) / state.scale;
-            const width = (state.cropEndX - state.cropStartX) / state.scale;
-            const height = (state.cropEndY - state.cropStartY) / state.scale;
-
-            const temp = document.createElement('canvas');
-            temp.width = width; temp.height = height;
+            const left = state.cropStartX / state.scale; const top = state.cropStartY / state.scale;
+            const width = (state.cropEndX - state.cropStartX) / state.scale; const height = (state.cropEndY - state.cropStartY) / state.scale;
+            const temp = document.createElement('canvas'); temp.width = Math.abs(width); temp.height = Math.abs(height);
             temp.getContext('2d').drawImage(img, left, top, width, height, 0, 0, width, height);
-            
             const newImg = new Image();
             newImg.onload = () => {
                 state.originalImages[state.currentIdx].img = newImg;
@@ -530,27 +608,36 @@
                 const rect = el.mainCanvas.getBoundingClientRect();
                 state.cropEndX = (e.clientX - rect.left) / state.scale;
                 state.cropEndY = (e.clientY - rect.top) / state.scale;
-                el.cropBox.style.width = ((state.cropEndX - state.cropStartX) * state.scale) + 'px';
-                el.cropBox.style.height = ((state.cropEndY - state.cropStartY) * state.scale) + 'px';
+                el.cropBox.style.width = Math.abs(state.cropEndX - state.cropStartX) * state.scale + 'px';
+                el.cropBox.style.height = Math.abs(state.cropEndY - state.cropStartY) * state.scale + 'px';
                 el.applyCropBtn.classList.remove('hidden');
             } else if (state.isSliderDragging) {
-                const r = el.mainCanvas.getBoundingClientRect();
+                const r = el.canvasWrapper.getBoundingClientRect();
                 state.splitX = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 1); render();
             } else if (state.isDragging) {
                 state.translateX = e.clientX - state.startX; state.translateY = e.clientY - state.startY;
-                el.canvasWrapper.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`;
+                updateTransform();
             }
         };
         window.onmouseup = () => { state.isDragging = false; state.isSliderDragging = false; };
 
-        [el.tolerance, el.blackCrush, el.grain, el.textInput, el.fontPicker].forEach(i => i.oninput = () => {
+        el.canvasContainer.addEventListener('wheel', (e) => {
+            if (!el.studioPage.classList.contains('page-hidden')) {
+                e.preventDefault();
+                state.scale = Math.min(Math.max(state.scale + (e.deltaY > 0 ? -0.05 : 0.05), 0.05), 4);
+                el.zoomScale.value = state.scale; el.zoomVal.textContent = state.scale.toFixed(2) + 'x';
+                updateTransform();
+            }
+        }, { passive: false });
+
+        [el.tolerance, el.blackCrush, el.grain, el.textInput, el.fontPicker, el.textEffect, el.effectStrength, el.letterSpacing, el.fontWeight].forEach(i => i.oninput = () => {
             el.tolVal.textContent = el.tolerance.value; el.crushVal.textContent = el.blackCrush.value; el.grainVal.textContent = el.grain.value;
             if (!el.splitToggle.checked) render();
         });
 
         el.processBtn.onclick = render;
         el.downloadBtn.onclick = async () => {
-            const config = { tolerance: parseInt(el.tolerance.value), crush: parseInt(el.blackCrush.value), grain: parseInt(el.grain.value), inkColor: el.inkColor.value, text: el.textInput.value, font: el.fontPicker.value };
+            const config = { tolerance: parseInt(el.tolerance.value), crush: parseInt(el.blackCrush.value), grain: parseInt(el.grain.value), inkColor: el.inkColor.value, text: el.textInput.value, font: el.fontPicker.value, effect: el.textEffect.value, strength: parseInt(el.effectStrength.value) };
             const final = processImage(state.originalImages[state.currentIdx]?.img || null, config);
             final.toBlob(async (blob) => {
                 const dpiBlob = await changeDpi(blob);
@@ -559,14 +646,17 @@
             }, 'image/png');
         };
 
-        el.zoomScale.oninput = () => {
-            state.scale = parseFloat(el.zoomScale.value);
-            el.zoomVal.textContent = state.scale.toFixed(2) + 'x';
-            el.canvasWrapper.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`;
-        };
-
+        el.zoomScale.oninput = () => { state.scale = parseFloat(el.zoomScale.value); el.zoomVal.textContent = state.scale.toFixed(2) + 'x'; updateTransform(); };
+        function fitToScreen() {
+            const container = el.canvasContainer.getBoundingClientRect();
+            const width = state.originalImages[state.currentIdx]?.img?.width || 3000;
+            const height = state.originalImages[state.currentIdx]?.img?.height || 3000;
+            state.scale = Math.min((container.width - 80) / width, (container.height - 80) / height, 1);
+            state.translateX = 0; state.translateY = 0; el.zoomScale.value = state.scale; el.zoomVal.textContent = state.scale.toFixed(2) + 'x'; updateTransform();
+        }
+        function updateTransform() { el.canvasWrapper.style.transform = `translate(${state.translateX}px, ${state.translateY}px) scale(${state.scale})`; }
         function setView(mode) {
-            el.canvasContainer.className = `flex-grow relative overflow-hidden flex items-center justify-center ${mode === 'checker' ? 'checkerboard' : mode + '-shirt'}`;
+            el.canvasContainer.className = `flex-grow relative overflow-hidden flex items-center justify-center ${mode === 'checker' ? 'checkerboard' : (mode === 'green' ? 'green-screen-active' : mode + '-shirt')}`;
         }
     </script>
 </body>
