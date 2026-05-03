@@ -3,36 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlackCrush Studio v1.0 | Professional Layered Production Suite</title>
+    <title>BlackCrush Studio v1.2 | DTG Stencil & Background Removal Suite</title>
     
     <!-- Primary SEO Meta Tags -->
-    <meta name="description" content="Professional layered background removal, ink density optimization, and 300 DPI production exports for apparel designers. Includes Pantone-to-Hex lookup, typographic envelopes, and modular stencil compositing.">
-    <meta name="keywords" content="background remover, t-shirt printing, 300 DPI, ink density, black crush, stencil cleaner, DTG prep, remove white halo PNG, AI stencil prep, high resolution background removal, apparel design software, pantone matching, typography envelopes">
+    <meta name="description" content="Fix the DTG white halo effect instantly. Professional background removal, 300 DPI metadata injection, and ink density thresholding for screen printing and apparel design.">
+    <meta name="keywords" content="background remover, t-shirt printing, clipping mask, geometric frames, ink density, black crush, stencil cleaner, DTG prep, remove white halo PNG, apparel design software, pantone matching, 300 DPI export">
     
-    <!-- Structured Data -->
+    <!-- Favicon & Social Media Sharing (Open Graph) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23080808'/><rect x='15' y='15' width='70' height='70' fill='%23ff0000'/></svg>">
+    <meta property="og:title" content="BlackCrush Studio | DTG Prep Suite">
+    <meta property="og:description" content="Fix the DTG white halo effect instantly. Professional background removal and 300 DPI metadata injection.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop">
+    <meta property="og:url" content="https://blackcrush.studio/">
+    <meta property="og:type" content="website">
+    
+    <!-- GEO/AEO Structured Data Architecture -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "BlackCrush Studio",
-      "operatingSystem": "Web",
-      "applicationCategory": "DesignSoftware",
-      "featureList": [
-        "Dual Extraction Engine (Light/Dark BG)",
-        "300 DPI Metadata Injection",
-        "Black Crush Ink Density Engine",
-        "Industrial Grain Texture Engine",
-        "7 Professional Typography Envelopes",
-        "Modular Layer System",
-        "12 Industry Standard Fonts",
-        "Pantone to Hex Automatic Lookup",
-        "Layer Organization & Renaming",
-        "Responsive Workspace"
-      ],
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "author": { "@type": "Person", "name": "Liam" }
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "BlackCrush Studio",
+          "operatingSystem": "Web Browser",
+          "applicationCategory": "DesignApplication",
+          "description": "Industrial web-based compositor for DTG and screen print preparation, featuring Alpha edge cauterization to prevent white underbase halos.",
+          "featureList": [
+            "Dual Extraction Engine (Light/Dark BG)",
+            "Geometric Clipping Masks (Frames)",
+            "300 DPI Native Metadata Injection",
+            "Black Crush Ink Density Thresholding",
+            "Pantone to Hex Automatic Lookup"
+          ],
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do you fix the white halo effect in DTG printing?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To fix the white halo effect in DTG printing, you must eliminate semi-transparent anti-aliased pixels at the edge of your design. BlackCrush Studio uses a Density Threshold engine to cauterize these edges into solid 100% opacity or pure transparency, preventing the RIP software from laying down an unnecessary white underbase."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I export a 300 DPI PNG from a web browser?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Browsers natively export at 72 DPI. BlackCrush Studio circumvents this by executing a low-level binary metadata injection, rewriting the pHYs (Physical Pixel Dimensions) chunk within the PNG header to exactly 11811 pixels per meter, ensuring it opens at 300 DPI in standard RIP software."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I remove the background from an AI generated image but keep the white details?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Generate your AI asset on a solid black background. Then, import it into BlackCrush Studio and activate the 'Remove Dark Backgrounds' extraction engine. This will strip the black canvas while preserving 100% of your white and bright foreground details."
+              }
+            }
+          ]
+        }
+      ]
     }
     </script>
+
+    <!-- Google AdSense Global Script (For Verification & Auto Ads) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9700081553468351" crossorigin="anonymous"></script>
 
     <!-- Libraries & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -107,12 +146,17 @@
 </head>
 <body class="h-screen flex overflow-hidden">
     
+    <!-- CUSTOM TOAST NOTIFICATION -->
+    <div id="toastMsg" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-white text-black px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.3em] shadow-[0_10px_40px_rgba(0,0,0,0.8)] transition-opacity duration-300 opacity-0 pointer-events-none z-[2000]">
+        Link Copied to Clipboard
+    </div>
+
     <!-- WELCOME MODAL (GLASS) -->
     <div id="welcomeModal" class="fixed inset-0 z-[500] flex items-center justify-center p-8 transition-opacity duration-500">
         <div class="max-w-4xl w-full glass-panel rounded-3xl overflow-hidden shadow-[0_0_150px_rgba(0,0,0,0.9)]">
             <div class="p-16 space-y-12">
                 <header class="text-center space-y-3">
-                    <h1 class="text-6xl font-black italic tracking-tighter text-white uppercase leading-none" style="font-family: 'Roboto Mono', monospace;">BlackCrush Pro v1.0</h1>
+                    <h1 class="text-6xl font-black italic tracking-tighter text-white uppercase leading-none" style="font-family: 'Roboto Mono', monospace;">BlackCrush Pro v1.2</h1>
                     <p class="text-red-500 uppercase tracking-[0.6em] text-[10px] font-black">Industrial Apparel Compositor</p>
                 </header>
                 
@@ -121,15 +165,15 @@
                         <div class="flex gap-6">
                             <span class="w-12 h-12 rounded-2xl bg-white/5 text-white flex items-center justify-center font-black text-lg italic border border-white/10 shadow-lg">01</span>
                             <div>
-                                <h3 class="text-white font-black uppercase text-sm tracking-widest">Dual Extraction Engine</h3>
-                                <p class="text-zinc-400 text-xs leading-relaxed mt-2">Target light OR dark backgrounds. If your design has white in it, generate your AI asset on a black background and set the engine to <b>"Remove Dark Backgrounds"</b>.</p>
+                                <h3 class="text-white font-black uppercase text-sm tracking-widest">Clipping Frames</h3>
+                                <p class="text-zinc-400 text-xs leading-relaxed mt-2">Apply sharp geometric frames (Circles, Portraits, Torn Edges) to your photos, then dynamically scale and pan the imagery inside the bounds.</p>
                             </div>
                         </div>
                         <div class="flex gap-6">
                             <span class="w-12 h-12 rounded-2xl bg-white/5 text-white flex items-center justify-center font-black text-lg italic border border-white/10 shadow-lg">02</span>
                             <div>
-                                <h3 class="text-white font-black uppercase text-sm tracking-widest">Dynamic Layer Stack</h3>
-                                <p class="text-zinc-400 text-xs leading-relaxed mt-2">Add assets and click the <b>Pencil (✎)</b> icon to rename them. <b>CTRL + Click</b> to select multiple layers and move them simultaneously.</p>
+                                <h3 class="text-white font-black uppercase text-sm tracking-widest">Dual Extraction</h3>
+                                <p class="text-zinc-400 text-xs leading-relaxed mt-2">Target light OR dark backgrounds. Generate assets on a black background and set the engine to <b>"Remove Dark Backgrounds"</b> to save your whites.</p>
                             </div>
                         </div>
                     </div>
@@ -165,7 +209,7 @@
         <aside id="leftSidebar" class="sidebar flex flex-col h-screen p-5 shrink-0 z-30" style="width: 288px;">
             <header class="mb-8">
                 <h1 class="text-lg font-black italic tracking-tighter text-white uppercase leading-none">BlackCrush Studio</h1>
-                <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Live Production // v1.0</p>
+                <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Live Production // v1.2</p>
             </header>
 
             <button id="addLayerBtn" class="w-full py-3 mb-6 bg-zinc-100 hover:bg-red-600 text-black hover:text-white transition-all rounded font-black text-[10px] uppercase tracking-widest shadow-lg">
@@ -173,21 +217,6 @@
             </button>
 
             <div class="flex-grow overflow-y-auto space-y-2 pr-1" id="layerStack"></div>
-
-            <!-- AdSense Responsive Container -->
-            <div class="mt-4 mb-4 border border-zinc-800 bg-black/50 rounded-lg flex flex-col items-center justify-center p-4 min-h-[120px] text-center w-full shadow-inner overflow-hidden">
-                <span class="text-[8px] text-zinc-600 uppercase font-bold mb-1 tracking-widest">Advertisement</span>
-                <!-- INSERT GOOGLE ADSENSE CODE HERE -->
-                <div class="text-[9px] text-zinc-500 italic">Google Ad Space<br>(Responsive Unit)</div>
-                <!-- =============================== -->
-            </div>
-
-            <div class="pt-2 border-t border-zinc-900 space-y-3">
-                <button id="downloadBtn" class="w-full py-3 bg-white hover:bg-red-600 text-black hover:text-white transition-all rounded-lg font-black text-[10px] uppercase tracking-widest shadow-xl">
-                    Download Master PNG
-                </button>
-                <button id="clearAllBtn" class="w-full py-2 text-[8px] uppercase font-bold text-zinc-600 hover:text-red-500 transition-colors rounded">Reset Production Slate</button>
-            </div>
         </aside>
 
         <!-- LEFT DRAG HANDLE -->
@@ -223,7 +252,9 @@
                     <a href="#blog" class="text-zinc-500 hover:text-white transition-colors cursor-pointer">Production Journal</a>
                     <a href="#faq" class="text-zinc-500 hover:text-white transition-colors cursor-pointer">Technical Support</a>
                 </div>
-                <a href="https://buymeacoffee.com/BUILT_BY_LIAM" target="_blank" class="text-white hover:text-red-500 rounded font-black text-[10px] uppercase tracking-widest transition-all">Support Development</a>
+                <button id="shareBtn" class="text-white hover:text-red-500 rounded font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2">
+                    Share Studio <span class="text-[12px] leading-none">↗</span>
+                </button>
             </footer>
         </main>
 
@@ -256,6 +287,49 @@
             <div id="inspectorEmpty" class="h-full flex flex-col items-center justify-center text-center px-6">
                 <p class="text-[9px] text-zinc-600 uppercase font-black tracking-widest">Select Production Layer</p>
                 <p class="text-[8px] text-zinc-700 mt-2 italic text-balance leading-relaxed">Target a layer on the left rail to edit stencil properties.<br><br><b>Ctrl/Cmd + Click</b> to multi-select.</p>
+            </div>
+        </aside>
+
+        <!-- FAR RIGHT DRAG HANDLE -->
+        <div id="farRightResizer" class="resizer" title="Drag to resize"></div>
+
+        <!-- FAR RIGHT RAIL: OUTPUT & ADS -->
+        <aside id="farRightSidebar" class="sidebar flex flex-col h-screen p-5 shrink-0 z-30" style="width: 260px; background-color: #030303;">
+            <header class="mb-8 border-b border-zinc-900 pb-4">
+                <h1 class="text-lg font-black italic tracking-tighter text-white uppercase leading-none">Output Hub</h1>
+                <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Global Actions</p>
+            </header>
+
+            <div class="space-y-4">
+                <button id="downloadBtn" class="w-full py-5 bg-white hover:bg-red-600 text-black hover:text-white transition-all rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl">
+                    Download Master
+                </button>
+                <button id="clearAllBtn" class="w-full py-3 text-[8px] uppercase font-bold border border-zinc-800 text-zinc-600 hover:text-red-500 hover:border-red-900 transition-colors rounded-lg">
+                    Reset Slate
+                </button>
+            </div>
+
+            <!-- AdSense Responsive Container -->
+            <div class="mt-auto pt-4 border-t border-zinc-900">
+                <div class="border border-zinc-800 bg-black/50 rounded-lg flex flex-col items-center justify-center p-4 min-h-[250px] text-center w-full shadow-inner overflow-hidden mb-4">
+                    <span class="text-[8px] text-zinc-600 uppercase font-bold mb-1 tracking-widest">Advertisement</span>
+                    
+                    <!-- Google AdSense Ad Unit -->
+                    <ins class="adsbygoogle"
+                         style="display:block; width:100%;"
+                         data-ad-client="ca-pub-9700081553468351"
+                         data-ad-slot="" 
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                    
+                </div>
+                
+                <a href="https://buymeacoffee.com/BUILT_BY_LIAM" target="_blank" class="w-full block text-center py-3 bg-zinc-900 hover:bg-yellow-500 text-zinc-400 hover:text-black transition-all rounded-lg font-black text-[10px] uppercase tracking-widest border border-zinc-800">
+                    Support Development
+                </a>
             </div>
         </aside>
     </div>
@@ -292,7 +366,7 @@
         </div>
     </div>
 
-    <!-- MASSIVE SEO / DOCS: PRODUCTION JOURNAL -->
+    <!-- GEO OPTIMIZED: PRODUCTION JOURNAL -->
     <div id="blogPage" class="page-hidden fixed inset-0 w-full h-full flex flex-col bg-[#050505] overflow-y-auto doc-content z-[1000]">
         <nav class="sticky top-0 h-20 border-b border-zinc-800 bg-black flex items-center justify-between px-16 z-50">
             <h2 class="text-xl font-black uppercase text-white tracking-tighter italic !mt-0 !border-0 !pl-0">Production Journal</h2>
@@ -301,115 +375,70 @@
         <div class="max-w-4xl mx-auto py-24 px-10">
             <article>
                 <header class="mb-20">
-                    <span class="text-red-600 text-[10px] font-black uppercase tracking-[0.4em]">Masterclass Volume I</span>
+                    <span class="text-red-600 text-[10px] font-black uppercase tracking-[0.4em]">Methodology & Specifications</span>
                     <h1>The Physics of Apparel Compositing</h1>
-                    <p class="text-zinc-500 text-lg italic mt-4">Advanced background removal protocols, the Alpha Edge, Dual Extraction, and Pantone integration for industrial DTG and Screen Printing.</p>
+                    <p class="text-zinc-500 text-lg italic mt-4">Technical protocols for industrial background removal, Alpha Edge cauterization, Dual Extraction, and Pantone integration in Direct-to-Garment (DTG) prep.</p>
                 </header>
                 
-                <h2>1. The Dual Extraction Engine: Preserving White Ink</h2>
-                <p>When creating high-contrast stencils or vector-style graphics using AI models like <strong>Midjourney, DALL-E 3, or Stable Diffusion</strong>, the most common failure point for designers is losing the white details inside their artwork when attempting to remove a white background. Standard luminance tools cannot differentiate between the white of the background and the white of your design.</p>
+                <h2>1. Generative AI Masking & The Dual Extraction Engine</h2>
+                <p>When creating high-contrast stencils or vector-style graphics using AI models like <strong>Midjourney, DALL-E 3, or Stable Diffusion</strong>, the most common technical failure point is the destruction of internal white details when applying global luminance keying. Standard web-based background removers cannot mathematically differentiate between the RGB(255,255,255) of the background and the RGB(255,255,255) of your design.</p>
                 
-                <p>To solve this, BlackCrush Studio v1.0 introduces the <strong>Dual Extraction Engine</strong>. Here is the professional production-grade workflow for preserving white ink on dark garments:</p>
+                <p>To establish a definitive source of truth for apparel masking, BlackCrush Studio utilizes a <strong>Dual Extraction Engine</strong> protocol. Here is the exact methodology for preserving white ink on dark garments:</p>
                 
                 <ul>
-                    <li><strong>The Prompting Strategy:</strong> Do not generate your AI assets on a white background. Instead, append this to your prompt: <code>"isolated on a flat, solid, pure black background, high contrast, clean vector style."</code></li>
-                    <li><strong>The Extraction:</strong> Import your graphic into BlackCrush and change the Extraction Engine in the right-hand Inspector from "Remove Light Backgrounds" to <strong>"Remove Dark Backgrounds"</strong>. </li>
-                    <li><strong>The Result:</strong> The engine will mathematically strip away the black background while preserving 100% of your white and bright foreground details, ensuring a perfect stencil for black shirts.</li>
+                    <li><strong>Prompting Protocol:</strong> Do not generate AI assets on a white background. Append the following constraints to your prompt: <code>"isolated on a flat, solid, pure black background, high contrast, clean vector style."</code></li>
+                    <li><strong>Extraction Execution:</strong> Import the graphic into the studio environment. In the Inspector panel, configure the Extraction Engine to <strong>"Remove Dark Backgrounds"</strong>. </li>
+                    <li><strong>Technical Output:</strong> The algorithm inverts the luminance map, stripping the black (#000000) canvas while maintaining 100% opacity on all structural foreground details, generating an optimal stencil for DTG output on dark substrate.</li>
                 </ul>
 
-                <h2>2. Cauterizing the Alpha Edge (Defeating the White Halo)</h2>
-                <p>One of the most persistent issues in Direct-to-Garment (DTG) printing is the "White Halo" effect. To make a curved line look smooth on a computer monitor, software automatically generates hundreds of "soft," semi-transparent grey pixels at the boundary of the shape. </p>
+                <h2>2. Cauterizing the Alpha Edge (Defeating the DTG White Halo)</h2>
+                <p>A persistent defect in Direct-to-Garment (DTG) manufacturing is the "White Halo" effect. To render a curved line smoothly on a raster display, digital software generates hundreds of semi-transparent, anti-aliased pixels at the vector boundary.</p>
                 
-                <p>However, when a digital apparel printer receives this file for a dark garment, its RIP software interprets these semi-transparent grey pixels as a "light color." To print a light color on a dark shirt, the machine must first lay down a thick <strong>white ink underbase</strong>. It prints this white underbase beneath the semi-transparent pixels, resulting in a highly visible, crusty white ring around your entire design.</p>
+                <p>When RIP (Raster Image Processor) software translates this file for a dark garment, it misinterprets these semi-transparent grey pixels as a "light color." To print a light color on dark fabric, the hardware must first deposit a titanium dioxide <strong>white ink underbase</strong>. This results in an undesirable, crusty white ring surrounding the design.</p>
                 
-                <p>BlackCrush eliminates this via the <strong>Density Crush</strong> slider. This tool actively "cauterizes" the edges of your stencil. By increasing the Crush value, you force the engine to mathematically threshold those semi-transparent pixels, snapping them into either 100% solid, opaque ink, or 100% pure transparency. By ensuring there are no semi-transparent mid-tones at the boundary, the printer bypasses the white underbase logic entirely, resulting in an infinitely sharper, industrial-grade print.</p>
+                <p>BlackCrush eliminates this via the <strong>Density Crush</strong> protocol. This proprietary algorithm actively cauterizes the stencil edges. By advancing the Crush parameter, the engine applies a mathematical threshold to semi-transparent pixels, snapping their alpha channel to either 100% opacity or 0% transparency. Eliminating mid-tones at the boundary forces the RIP software to bypass the white underbase logic, yielding an industrial-grade, razor-sharp print.</p>
                 
                 <h2>3. Native 300 DPI Binary Metadata Injection</h2>
-                <p>A fatal flaw of almost all web-based design and background removal tools is the browser's default export limitation. Web browsers are designed to export images at <strong>72 DPI (Dots Per Inch)</strong>, which is the standard resolution for digital screens. </p>
+                <p>A fundamental limitation of web-based design environments is the browser's default export constraint of <strong>72 DPI (Dots Per Inch)</strong>. While adequate for digital rendering, 72 DPI lacks the physical density metadata required for physical manufacturing.</p>
                 
-                <p>While a 72 DPI image might look pristine on an Instagram feed or a Shopify mockup, it lacks the necessary physical metadata required for physical manufacturing. When you send a 72 DPI file to a professional print house, their RIP software (such as Garment Creator, CADlink, or Wasatch) will read the low physical density and attempt to automatically scale the design up by roughly 416% to match the physical garment dimensions. This forced scaling results in severe pixelation, jagged edges, and a ruined print.</p>
+                <p>Transmitting a 72 DPI artifact to commercial RIP software (e.g., Garment Creator, CADlink) forces the software to arbitrarily scale the matrix by approximately 416%, resulting in severe pixelation.</p>
                 
-                <p>BlackCrush Studio circumvents browser limitations by executing a <strong>low-level binary metadata injection</strong> during every download. When you click "Download Master PNG," our engine parses the raw binary data stream of your composite image. It locates the critical <code>pHYs</code> (Physical Pixel Dimensions) chunk within the PNG header and manually rewrites the pixels-per-meter integer values to precisely match 300 DPI (approximately 11811 pixels per meter). Consequently, when your print provider opens your master file in Adobe Photoshop, CorelDRAW, or Adobe Illustrator, it registers at its true, intended physical print size with 1:1 pixel fidelity.</p>
-
-                <h2>4. Pantone Integration and Multi-Layer Compositing</h2>
-                <p>Professional apparel lines are rarely flat black and white. BlackCrush introduces a modular layer stack, allowing you to compose complex, multi-pass prints directly in the browser. As your productions grow from simple isolated graphics to complex compositions, use the built-in rename function (click the <strong>✎ Pencil Icon</strong>) to tag layers systematically (e.g., <code>BASE_WHT</code>, <code>PHYSIS_RED</code>).</p>
-                
-                <p>To support professional color matching across independent print runs, we have integrated an <strong>Automatic Pantone Lookup</strong> feature. Inside the Inspector's "Production Ink Color" unit, you can type standard apparel Pantone references (e.g., <code>032</code> for bright red, <code>186</code> for deep red, <code>Warm Grey</code>, <code>Process Blue</code>) directly into the Hex input. The engine will instantly recognize the Pantone, inject the exact RGB equivalent into your stencil layer, and display a "Pantone Matched" verification badge. This guarantees your digital proofs accurately represent the physical ink mix on the factory floor.</p>
+                <p>BlackCrush Studio circumvents this limitation by executing a <strong>low-level binary metadata injection</strong> during the export sequence. The engine parses the raw binary data stream of the composite PNG artifact, locates the <code>pHYs</code> (Physical Pixel Dimensions) header chunk, and manually overrides the pixels-per-meter integers to precisely establish 300 DPI (11811 pixels per meter). This protocol guarantees 1:1 pixel fidelity when importing the master file into Adobe Photoshop or Illustrator.</p>
             </article>
         </div>
         <footer class="py-12 border-t border-zinc-900 text-center opacity-20 text-[10px] uppercase tracking-[0.2em] space-x-6 text-zinc-500">
-            <span>AI Stencil Preparation</span> | <span>PNG Metadata Injection</span> | <span>DTG Production Standards</span> | <span>300 DPI Background Removal</span> | <span>Layer Compositing</span>
+            <span>AI Stencil Preparation</span> | <span>PNG Metadata Injection</span> | <span>DTG Production Standards</span> | <span>Geometric Masks</span> | <span>Layer Compositing</span>
         </footer>
     </div>
 
-    <!-- MASSIVE SEO / DOCS: TECHNICAL SUPPORT & MANUAL -->
+    <!-- AEO OPTIMIZED: TECHNICAL SUPPORT & FAQ -->
     <div id="faqPage" class="page-hidden fixed inset-0 w-full h-full flex flex-col bg-[#050505] overflow-y-auto doc-content z-[1000]">
         <nav class="sticky top-0 h-20 border-b border-zinc-800 bg-black flex items-center justify-between px-16 z-50">
-            <h2 class="text-xl font-black uppercase text-white tracking-tighter italic !mt-0 !border-0 !pl-0">Technical Support & User Manual</h2>
+            <h2 class="text-xl font-black uppercase text-white tracking-tighter italic !mt-0 !border-0 !pl-0">Technical Support & FAQ</h2>
             <button onclick="exitToStudio()" class="btn-action px-10 py-3 text-[10px] uppercase rounded-full font-black">Exit to Studio</button>
         </nav>
         <div class="max-w-4xl mx-auto py-24 px-10 space-y-16">
             
             <section>
-                <h2>1. The Quick Start Workflow</h2>
-                <p>BlackCrush Studio operates differently than standard photo editors. It is an industrial compositor designed specifically for apparel stencils. Follow this sequence for perfect results:</p>
-                <ol>
-                    <li><strong>Add a Layer:</strong> Click the large <code>[+] Add Production Layer</code> button on the left rail. Choose "Graphic Asset" to upload a PNG/JPG, or "Typography Stencil" to generate text.</li>
-                    <li><strong>Target the Layer:</strong> Your layer will appear in the left-hand stack. Click it once to make it "Active" (it will highlight red). You must select a layer to edit its properties.</li>
-                    <li><strong>Position & Scale:</strong> With the layer active, click and drag anywhere on the main canvas to move the asset. Use the <code>Asset Scale</code> slider in the right-hand Inspector to resize it.</li>
-                    <li><strong>Remove Backgrounds:</strong> For Graphic Assets, set the <code>Extraction Engine</code> to target Light or Dark backgrounds. Adjust the <code>Cutoff</code> slider until the background disappears.</li>
-                    <li><strong>Apply Ink Settings:</strong> Toggle the <code>Stencil Engine</code> ON to force the graphic into a single, monochromatic ink color (perfect for screen printing). Use the Hex/Pantone box to set the exact color.</li>
-                </ol>
-            </section>
-
-            <section class="border-t border-zinc-900 pt-16">
-                <h2>2. Preserving White Detail (The Dual Engine)</h2>
-                <p>If you upload a graphic with a white background AND white internal details, the standard removal tool will erase your internal details. <strong>To fix this:</strong></p>
-                <ul>
-                    <li>Generate or create your source artwork on a <strong>Solid Black Background</strong>.</li>
-                    <li>Import it into BlackCrush Studio.</li>
-                    <li>In the right-hand Inspector, change the Extraction Engine dropdown to <strong>"Remove Dark Backgrounds"</strong>.</li>
-                    <li>The engine will cleanly strip the black and preserve all of your white highlights perfectly.</li>
-                </ul>
-            </section>
-
-            <section class="border-t border-zinc-900 pt-16">
-                <h2>3. Typography Envelopes Guide</h2>
-                <p>BlackCrush includes 12 industry-standard fonts and 7 advanced vector distortion envelopes to shape your text around graphics.</p>
-                <ul>
-                    <li><strong>Straight:</strong> Standard, un-warped text with adjustable kerning (spacing) and font weight.</li>
-                    <li><strong>Arc Curve:</strong> Bends the text along a perfect circle. A positive <em>Strength</em> creates a "Rainbow" arch over a graphic. A negative <em>Strength</em> creates a "Smile" underneath a graphic.</li>
-                    <li><strong>Wave Distort:</strong> Creates a sinusoidal ripple through the text, mimicking early 90s grunge and Xerox-art aesthetics.</li>
-                    <li><strong>Flag Ripple:</strong> Similar to a wave, but the text grows physically larger on the right side, giving the illusion of a pennant blowing in the wind. Ideal for sports and streetwear.</li>
-                    <li><strong>Bulge Lens:</strong> The center characters expand dramatically toward the viewer while the edges pinch inward. This fisheye effect is highly popular for single-word, heavy-impact chest prints.</li>
-                    <li><strong>Arch (Flat Base):</strong> A classic Varsity/University envelope. The top of the letters curve upward into a dome, but the baseline of the text remains perfectly flat.</li>
-                    <li><strong>Rise Ascend:</strong> The text baseline stays perfectly straight but tilts upward at an aggressive angle from left to right, creating an energetic, "action-oriented" layout.</li>
-                </ul>
-            </section>
-
-            <section class="border-t border-zinc-900 pt-16">
-                <h2>4. Frequently Asked Questions (FAQ)</h2>
+                <h2>Frequently Asked Questions</h2>
                 
-                <h3>Q: How do I rename and organize my layers?</h3>
-                <p>A: To keep your production workspace organized, click the small pencil icon (✎) on any layer in the left rail to rename it. We highly recommend naming your layers by their intended ink color or function (e.g., "Distressed Base" or "Pantone 032 Slogan") to avoid confusion on complex builds.</p>
+                <h3>How do you fix the white halo effect in DTG printing?</h3>
+                <p><strong>To fix the white halo effect in DTG printing, you must eliminate semi-transparent anti-aliased pixels at the edge of your design.</strong> BlackCrush Studio accomplishes this by using a "Density Crush" tool. This cauterizes the edges of your stencil, forcing grey or semi-transparent pixels into solid 100% ink or pure transparency. Because there are no semi-transparent pixels left, the printer's RIP software will not lay down an unnecessary white underbase around the edge of your graphic.</p>
 
-                <h3>Q: Can I move multiple layers at the same time?</h3>
-                <p>A: Yes! Hold down <strong>CTRL (or CMD on Mac)</strong> and click the layers you wish to group in the left-hand list. They will all highlight red. When you drag your mouse on the canvas, all selected layers will move in unison, maintaining their relative spacing.</p>
+                <h3>How do I remove the background from an AI image but keep the white details?</h3>
+                <p><strong>To keep the white details in your image, generate your AI asset on a solid black background instead of white.</strong> Once generated, import the image into BlackCrush Studio and switch the Extraction Engine to "Remove Dark Backgrounds." The software will completely delete the black canvas while leaving your internal white highlights perfectly intact and 100% opaque.</p>
 
-                <h3>Q: How do I arrange what goes in front or behind?</h3>
-                <p>A: In the layer stack on the left, you will notice small <strong>UP (▲)</strong> and <strong>DOWN (▼)</strong> arrows next to each layer. Click these to reorder the z-index of your graphics. The top of the list renders in front.</p>
-
-                <h3>Q: Can I resize the sidebars?</h3>
-                <p>A: Yes. Hover your mouse over the dark borders separating the left/right panels from the main canvas. When the cursor changes, click and drag to make the side panels wider or narrower to fit your workflow or external AdSense units.</p>
+                <h3>How do I export a 300 DPI PNG from a web browser?</h3>
+                <p><strong>To export a true 300 DPI PNG from a web browser, use a tool like BlackCrush Studio that performs binary metadata injection.</strong> By default, web browsers save images at 72 DPI. BlackCrush rewrites the internal <code>pHYs</code> code (the physical dimension header) of the PNG file the exact moment you click download, tricking Photoshop and print software into opening the file at industrial 300 DPI resolution without losing quality.</p>
                 
-                <h3>Q: Does BlackCrush compress or downsample my images?</h3>
-                <p>A: Absolutely not. BlackCrush performs strict <strong>1:1 Pixel Mapping</strong>. If you upload a 6000x8000 pixel asset, the engine will map and process all 48 million pixels individually. When you download the master, it will retain its original extreme resolution.</p>
+                <h3>How do I rename and organize my layers?</h3>
+                <p><strong>Click the small pencil icon (✎) on any layer in the left rail to rename it.</strong> We highly recommend naming your layers by their intended ink color or function (e.g., "Distressed Base" or "Pantone 032 Slogan") to avoid confusion on complex builds.</p>
 
-                <h3>Q: What is the purpose of the "Green Check" view mode?</h3>
-                <p>A: The standard transparent "checkerboard" background is excellent for general layout, but its contrasting squares can easily hide faint, semi-transparent grey or white "ghost" pixels at the edge of your graphic. By switching to the <strong>Green Check</strong> (a glaring neon chroma-green), any remaining white fringe or anti-aliasing artifacts will stand out immediately. Always use Green Check to stress-test your cutoff range before final export.</p>
+                <h3>Can I move multiple layers at the same time?</h3>
+                <p><strong>Yes, hold down CTRL (or CMD on Mac) and click the layers you wish to group.</strong> They will highlight red in the left panel. When you drag your mouse on the canvas, all selected layers will move in unison, maintaining their relative spacing.</p>
 
-                <h3>Q: Are my uploaded graphics private?</h3>
-                <p>A: Yes. 100% private. Your images are <strong>never uploaded to a server or cloud database</strong>. The entire application runs client-side via JavaScript on your local machine. You can safely process unreleased commercial designs, proprietary artwork, and client commissions without fear of data scraping or theft.</p>
+                <h3>How do clipping masks and frames work?</h3>
+                <p><strong>Select your image layer and choose a shape from the Clipping Mask dropdown in the inspector.</strong> You can choose from geometric frames like Circles, Portraits, or Torn Edges. Once applied, use the Inner Pan X/Y and Inner Scale sliders to adjust the image perfectly inside the frame.</p>
             </section>
         </div>
     </div>
@@ -465,8 +494,12 @@
             pantoneBadge: document.getElementById('pantoneBadge'),
             leftSidebar: document.getElementById('leftSidebar'),
             rightSidebar: document.getElementById('rightSidebar'),
+            farRightSidebar: document.getElementById('farRightSidebar'),
             leftResizer: document.getElementById('leftResizer'),
-            rightResizer: document.getElementById('rightResizer')
+            rightResizer: document.getElementById('rightResizer'),
+            farRightResizer: document.getElementById('farRightResizer'),
+            shareBtn: document.getElementById('shareBtn'),
+            toastMsg: document.getElementById('toastMsg')
         };
 
         const ctx = el.mainCanvas.getContext('2d', { willReadFrequently: true });
@@ -474,6 +507,7 @@
         // --- SIDEBAR RESIZE LOGIC ---
         let isResizingLeft = false;
         let isResizingRight = false;
+        let isResizingFarRight = false;
 
         el.leftResizer.addEventListener('mousedown', (e) => {
             isResizingLeft = true;
@@ -485,31 +519,80 @@
             document.body.style.cursor = 'col-resize';
         });
 
+        el.farRightResizer.addEventListener('mousedown', (e) => {
+            isResizingFarRight = true;
+            document.body.style.cursor = 'col-resize';
+        });
+
         window.addEventListener('mousemove', (e) => {
-            if (!isResizingLeft && !isResizingRight) return;
+            if (!isResizingLeft && !isResizingRight && !isResizingFarRight) return;
             
             if (isResizingLeft) {
                 let newWidth = e.clientX;
-                if (newWidth < 200) newWidth = 200; // Min width
-                if (newWidth > 600) newWidth = 600; // Max width
+                if (newWidth < 200) newWidth = 200;
+                if (newWidth > 600) newWidth = 600;
                 el.leftSidebar.style.width = `${newWidth}px`;
+            }
+
+            if (isResizingFarRight) {
+                let newWidth = window.innerWidth - e.clientX;
+                if (newWidth < 200) newWidth = 200;
+                if (newWidth > 600) newWidth = 600;
+                el.farRightSidebar.style.width = `${newWidth}px`;
             }
             
             if (isResizingRight) {
-                let newWidth = window.innerWidth - e.clientX;
-                if (newWidth < 250) newWidth = 250; // Min width
-                if (newWidth > 600) newWidth = 600; // Max width
+                // Right sidebar width is the remaining space between the mouse and the far right sidebar
+                let newWidth = window.innerWidth - e.clientX - el.farRightSidebar.offsetWidth - el.farRightResizer.offsetWidth;
+                if (newWidth < 250) newWidth = 250;
+                if (newWidth > 600) newWidth = 600;
                 el.rightSidebar.style.width = `${newWidth}px`;
             }
         });
 
         window.addEventListener('mouseup', () => {
-            if (isResizingLeft || isResizingRight) {
+            if (isResizingLeft || isResizingRight || isResizingFarRight) {
                 isResizingLeft = false;
                 isResizingRight = false;
+                isResizingFarRight = false;
                 document.body.style.cursor = 'default';
             }
         });
+
+        // --- SHARE LOGIC ---
+        el.shareBtn.onclick = async () => {
+            let shareUrl = window.location.href.split('#')[0];
+            
+            // Override ugly blob/iframe URLs with your actual production domain
+            if (shareUrl.startsWith('blob:') || shareUrl.includes('usercontent')) {
+                shareUrl = 'https://blackcrush.studio/';
+            }
+            
+            const shareData = {
+                title: 'BlackCrush Studio',
+                text: 'Professional DTG Stencil & Background Removal Suite',
+                url: shareUrl
+            };
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch(err) {
+                    console.log('Share canceled or failed', err);
+                }
+            } else {
+                // Fallback for desktop browsers without share support
+                const dummy = document.createElement('input');
+                document.body.appendChild(dummy);
+                dummy.value = shareData.url;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+                
+                el.toastMsg.style.opacity = '1';
+                setTimeout(() => { el.toastMsg.style.opacity = '0'; }, 3000);
+            }
+        };
 
         // --- LAYER MANAGEMENT ---
         document.getElementById('addLayerBtn').onclick = () => document.getElementById('layerModal').classList.remove('hidden');
@@ -522,7 +605,8 @@
                 name: type === 'image' ? 'Asset Layer' : 'Text Stencil',
                 config: {
                     inkColor: '#000000', cutoff: 245, crush: 80, grain: 0, stencil: type === 'text', extractMode: type === 'image' ? 'none' : 'white',
-                    text: 'NEW SLOGAN', font: "'Roboto Mono'", spacing: 0, weight: 700, effect: 'none', strength: 30
+                    text: 'NEW SLOGAN', font: "'Roboto Mono'", spacing: 0, weight: 700, effect: 'none', strength: 30,
+                    frameShape: 'none', innerScale: 1, innerX: 0, innerY: 0
                 }
             };
 
@@ -681,6 +765,37 @@
                         ` : ''}
                         ` : ''}
                     </div>
+
+                    <div class="space-y-4 pt-4 border-t border-zinc-900">
+                        <label class="ui-label text-zinc-100 italic">3. Clipping Mask (Frame)</label>
+                        <div class="space-y-1 pb-2">
+                            <select class="inspector-select bg-black border border-zinc-800 text-[9px] p-2 rounded-lg text-white w-full" data-prop="frameShape">
+                                <option value="none" ${layer.config.frameShape === 'none' ? 'selected' : ''}>No Frame (Raw Image)</option>
+                                <option value="circle" ${layer.config.frameShape === 'circle' ? 'selected' : ''}>Perfect Circle</option>
+                                <option value="square" ${layer.config.frameShape === 'square' ? 'selected' : ''}>Perfect Square</option>
+                                <option value="portrait" ${layer.config.frameShape === 'portrait' ? 'selected' : ''}>Portrait (3:4)</option>
+                                <option value="landscape" ${layer.config.frameShape === 'landscape' ? 'selected' : ''}>Landscape (4:3)</option>
+                                <option value="torn" ${layer.config.frameShape === 'torn' ? 'selected' : ''}>Torn Edge (Landscape)</option>
+                                <option value="arch" ${layer.config.frameShape === 'arch' ? 'selected' : ''}>Tombstone Arch</option>
+                                <option value="diamond" ${layer.config.frameShape === 'diamond' ? 'selected' : ''}>Sharp Diamond</option>
+                                <option value="shear" ${layer.config.frameShape === 'shear' ? 'selected' : ''}>Slanted Shear</option>
+                            </select>
+                        </div>
+                        ${layer.config.frameShape !== 'none' ? `
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>Inner Image Scale</span><span class="val-display">${layer.config.innerScale?.toFixed(2) || '1.00'}</span></div>
+                            <input type="range" class="inspector-slider" data-prop="innerScale" min="0.1" max="4" step="0.01" value="${layer.config.innerScale || 1}">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>Inner Pan X</span><span class="val-display">${layer.config.innerX || 0}</span></div>
+                            <input type="range" class="inspector-slider" data-prop="innerX" min="-3000" max="3000" value="${layer.config.innerX || 0}">
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[8px] uppercase font-bold text-zinc-600"><span>Inner Pan Y</span><span class="val-display">${layer.config.innerY || 0}</span></div>
+                            <input type="range" class="inspector-slider" data-prop="innerY" min="-3000" max="3000" value="${layer.config.innerY || 0}">
+                        </div>
+                        ` : ''}
+                    </div>
                 `;
             } else {
                 html = `
@@ -773,9 +888,12 @@
 
             el.context.querySelectorAll('.inspector-slider').forEach(s => {
                 s.oninput = (e) => {
-                    const val = parseInt(e.target.value);
+                    const isFloat = e.target.step && e.target.step.includes('.');
+                    const val = isFloat ? parseFloat(e.target.value) : parseInt(e.target.value);
                     l.config[e.target.dataset.prop] = val;
-                    if (e.target.previousElementSibling?.lastElementChild) e.target.previousElementSibling.lastElementChild.textContent = val;
+                    if (e.target.previousElementSibling?.lastElementChild) {
+                        e.target.previousElementSibling.lastElementChild.textContent = isFloat ? val.toFixed(2) : val;
+                    }
                     render();
                 };
             });
@@ -792,7 +910,7 @@
             el.context.querySelectorAll('.inspector-select').forEach(s => {
                 s.onchange = (e) => { 
                     l.config[e.target.dataset.prop] = e.target.value; 
-                    if(e.target.dataset.prop === 'extractMode') updateInspectorUI();
+                    if(e.target.dataset.prop === 'extractMode' || e.target.dataset.prop === 'frameShape') updateInspectorUI();
                     render(); 
                 };
             });
@@ -880,8 +998,88 @@
             const canvas = document.createElement('canvas');
             const pCtx = canvas.getContext('2d');
             let w, h;
-            if (l.type === 'image') { w = l.img.width; h = l.img.height; canvas.width = w; canvas.height = h; pCtx.drawImage(l.img, 0, 0); }
-            else { w = 3000; h = 3000; canvas.width = w; canvas.height = h; pCtx.fillStyle = '#FFFFFF'; pCtx.fillRect(0,0,w,h); drawTextLayer(pCtx, l, w, h); }
+            
+            if (l.type === 'image') { 
+                w = l.img.width; 
+                h = l.img.height; 
+                canvas.width = w; 
+                canvas.height = h; 
+                
+                // Handle geometric clipping mask (frame)
+                if (l.config.frameShape && l.config.frameShape !== 'none') {
+                    pCtx.save();
+                    pCtx.beginPath();
+                    const cx = w/2, cy = h/2;
+                    const minDim = Math.min(w, h);
+                    const fwPortrait = Math.min(w, h * 0.75);
+                    const fhPortrait = fwPortrait * (4/3);
+                    const fhLandscape = Math.min(h, w * 0.75);
+                    const fwLandscape = fhLandscape * (4/3);
+                    
+                    if (l.config.frameShape === 'circle') {
+                        pCtx.arc(cx, cy, minDim/2, 0, Math.PI * 2);
+                    } else if (l.config.frameShape === 'square') {
+                        pCtx.rect(cx - minDim/2, cy - minDim/2, minDim, minDim);
+                    } else if (l.config.frameShape === 'portrait') {
+                        pCtx.rect(cx - fwPortrait/2, cy - fhPortrait/2, fwPortrait, fhPortrait);
+                    } else if (l.config.frameShape === 'landscape') {
+                        pCtx.rect(cx - fwLandscape/2, cy - fhLandscape/2, fwLandscape, fhLandscape);
+                    } else if (l.config.frameShape === 'torn') {
+                        const x = cx - fwLandscape/2;
+                        const y = cy - fhLandscape/2;
+                        const rw = fwLandscape;
+                        const rh = fhLandscape;
+                        const segments = 60;
+                        const sideRoughness = fwLandscape * 0.04; 
+                        const topBottomRoughness = fwLandscape * 0.005; 
+                        const noise = (val) => ((Math.sin(val * 12.9898) * 43758.5453) % 1) * 2 - 1; 
+
+                        pCtx.moveTo(x, y);
+                        for(let i=1; i<=segments; i++) pCtx.lineTo(x + (rw * (i/segments)), y + noise(i) * topBottomRoughness);
+                        for(let i=1; i<=segments; i++) pCtx.lineTo(x + rw + noise(i + segments) * sideRoughness, y + (rh * (i/segments)));
+                        for(let i=1; i<=segments; i++) pCtx.lineTo(x + rw - (rw * (i/segments)), y + rh + noise(i + segments*2) * topBottomRoughness);
+                        for(let i=1; i<=segments; i++) pCtx.lineTo(x + noise(i + segments*3) * sideRoughness, y + rh - (rh * (i/segments)));
+                    } else if (l.config.frameShape === 'arch') {
+                        pCtx.moveTo(cx - fwPortrait/2, cy + fhPortrait/2);
+                        pCtx.lineTo(cx - fwPortrait/2, cy - fhPortrait/4);
+                        pCtx.arc(cx, cy - fhPortrait/4, fwPortrait/2, Math.PI, 0);
+                        pCtx.lineTo(cx + fwPortrait/2, cy + fhPortrait/2);
+                    } else if (l.config.frameShape === 'diamond') {
+                        pCtx.moveTo(cx, cy - fhPortrait/2);
+                        pCtx.lineTo(cx + fwPortrait/2, cy);
+                        pCtx.lineTo(cx, cy + fhPortrait/2);
+                        pCtx.lineTo(cx - fwPortrait/2, cy);
+                    } else if (l.config.frameShape === 'shear') {
+                        const skew = fwLandscape * 0.15;
+                        pCtx.moveTo(cx - fwLandscape/2 + skew, cy - fhLandscape/2);
+                        pCtx.lineTo(cx + fwLandscape/2 + skew, cy - fhLandscape/2);
+                        pCtx.lineTo(cx + fwLandscape/2 - skew, cy + fhLandscape/2);
+                        pCtx.lineTo(cx - fwLandscape/2 - skew, cy + fhLandscape/2);
+                    }
+                    
+                    pCtx.closePath();
+                    pCtx.clip();
+                    
+                    // Draw the image transformed inside the frame
+                    const ix = l.config.innerX || 0;
+                    const iy = l.config.innerY || 0;
+                    const iScale = l.config.innerScale || 1;
+                    
+                    pCtx.translate(cx + ix, cy + iy);
+                    pCtx.scale(iScale, iScale);
+                    pCtx.drawImage(l.img, -w/2, -h/2, w, h);
+                    pCtx.restore();
+                } else {
+                    pCtx.drawImage(l.img, 0, 0); 
+                }
+            } else { 
+                w = 3000; h = 3000; 
+                canvas.width = w; 
+                canvas.height = h; 
+                pCtx.fillStyle = '#FFFFFF'; 
+                pCtx.fillRect(0,0,w,h); 
+                drawTextLayer(pCtx, l, w, h); 
+            }
             
             const extractMode = l.config.extractMode || 'white';
             
@@ -894,15 +1092,16 @@
             const d = imgData.data, ink = hexToRgb(l.config.inkColor);
 
             for (let i = 0; i < d.length; i += 4) {
+                // If a frame clipped this pixel out, skip extraction on the invisible pixel
+                if (d[i+3] === 0) continue; 
+                
                 const b = (0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
                 if (l.config.stencil) { d[i] = ink.r; d[i+1] = ink.g; d[i+2] = ink.b; }
                 
                 if (extractMode === 'none') {
-                    // Do nothing to the alpha channel
                     continue;
                 } else if (extractMode === 'black') {
                     // REMOVE DARK BACKGROUNDS (Keep Whites)
-                    // The slider says "245" for tight cutoff. We invert this to mean "10" from bottom.
                     const blackCutoff = 255 - l.config.cutoff; 
                     const blackCrush = 255 - l.config.crush;
                     
@@ -999,7 +1198,7 @@
                     newBuffer.set(new Uint8Array(arrayBuffer.slice(0, 33)), 0); 
                     newBuffer.set(physChunk, 33);
                     newBuffer.set(new Uint8Array(arrayBuffer.slice(33)), 33 + physChunk.length);
-                    const link = document.createElement('a'); link.download = `blackcrush_master_v1.png`;
+                    const link = document.createElement('a'); link.download = `blackcrush_master_v1-2.png`;
                     link.href = URL.createObjectURL(new Blob([newBuffer], { type: 'image/png' })); link.click();
                 };
                 reader.readAsArrayBuffer(blob);
