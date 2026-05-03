@@ -212,15 +212,50 @@
                 <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Live Production // v1.2</p>
             </header>
 
-            <button id="addLayerBtn" class="w-full py-3 mb-6 bg-zinc-100 hover:bg-red-600 text-black hover:text-white transition-all rounded font-black text-[10px] uppercase tracking-widest shadow-lg">
+            <button id="addLayerBtn" title="Add a new image or text layer" class="w-full py-3 mb-6 bg-zinc-100 hover:bg-red-600 text-black hover:text-white transition-all rounded font-black text-[10px] uppercase tracking-widest shadow-lg shrink-0">
                 [+] Add Production Layer
             </button>
 
             <div class="flex-grow overflow-y-auto space-y-2 pr-1" id="layerStack"></div>
+
+            <div class="pt-4 mt-4 border-t border-zinc-900 space-y-3 shrink-0">
+                <button id="downloadBtn" title="Export full resolution 300DPI PNG" class="w-full py-3 bg-white hover:bg-red-600 text-black hover:text-white transition-all rounded-lg font-black text-[10px] uppercase tracking-widest shadow-xl">
+                    Download Master PNG
+                </button>
+                <button id="clearAllBtn" title="Delete all layers and start over" class="w-full py-2 text-[8px] uppercase font-bold text-zinc-600 hover:text-red-500 transition-colors rounded">
+                    Reset Production Slate
+                </button>
+                
+                <!-- AdSense Fixed Container -->
+                <div class="border border-zinc-800 bg-black/50 rounded-lg flex flex-col items-center justify-center py-3 text-center w-full shadow-inner overflow-hidden">
+                    <span class="text-[7px] text-zinc-600 uppercase font-bold mb-1 tracking-widest">Advertisement</span>
+                    <!-- Google AdSense Ad Unit -->
+                    <ins class="adsbygoogle"
+                         style="display:inline-block; width:200px; height:200px;"
+                         data-ad-client="ca-pub-9700081553468351"
+                         data-ad-slot=""></ins>
+                    <script>
+                         // Delay AdSense push and check for width to prevent availableWidth=0 errors
+                         setTimeout(function() {
+                             try { 
+                                 const adContainer = document.querySelector('.adsbygoogle');
+                                 if (adContainer && adContainer.offsetWidth > 0) {
+                                     (adsbygoogle = window.adsbygoogle || []).push({}); 
+                                 }
+                             } 
+                             catch (e) { console.warn("AdSense push delayed/failed", e); }
+                         }, 2000);
+                    </script>
+                </div>
+
+                <a href="https://buymeacoffee.com/BUILT_BY_LIAM" title="Support the creator" target="_blank" class="w-full block text-center py-2 bg-zinc-900 hover:bg-yellow-500 text-zinc-400 hover:text-black transition-all rounded-lg font-black text-[9px] uppercase tracking-widest border border-zinc-800">
+                    Support Development
+                </a>
+            </div>
         </aside>
 
         <!-- LEFT DRAG HANDLE -->
-        <div id="leftResizer" class="resizer" title="Drag to resize"></div>
+        <div id="leftResizer" class="resizer" title="Drag to resize left sidebar"></div>
 
         <!-- MAIN VIEW -->
         <main class="flex-grow flex flex-col relative overflow-hidden bg-zinc-900 min-w-[300px]">
@@ -228,14 +263,14 @@
             
             <nav class="h-14 border-b border-zinc-900 flex items-center justify-between px-6 bg-black z-30 shadow-xl">
                 <div class="flex gap-2">
-                    <button onclick="setView('black')" class="text-[9px] uppercase font-bold px-3 py-1 bg-zinc-900 text-white border border-white/10 rounded">Black Shirt</button>
-                    <button onclick="setView('white')" class="text-[9px] uppercase font-bold px-3 py-1 bg-white text-black rounded">White Shirt</button>
-                    <button onclick="setView('checker')" class="text-[9px] uppercase font-bold px-3 py-1 border border-zinc-800 text-zinc-400 rounded">Checker</button>
-                    <button onclick="setView('green')" class="text-[9px] uppercase font-bold px-3 py-1 bg-[#00FF00] text-black rounded">Green Check</button>
+                    <button onclick="setView('black')" title="Preview on a black garment" class="text-[9px] uppercase font-bold px-3 py-1 bg-zinc-900 text-white border border-white/10 rounded">Black Shirt</button>
+                    <button onclick="setView('white')" title="Preview on a white garment" class="text-[9px] uppercase font-bold px-3 py-1 bg-white text-black rounded">White Shirt</button>
+                    <button onclick="setView('checker')" title="Transparent checkerboard preview" class="text-[9px] uppercase font-bold px-3 py-1 border border-zinc-800 text-zinc-400 rounded">Checker</button>
+                    <button onclick="setView('green')" title="High-contrast green to spot white halos" class="text-[9px] uppercase font-bold px-3 py-1 bg-[#00FF00] text-black rounded">Green Check</button>
                 </div>
                 <div class="flex items-center gap-6">
                     <div class="flex items-center gap-2">
-                        <input type="range" id="zoomScale" min="0.05" max="3" step="0.01" value="1" class="w-24">
+                        <input type="range" id="zoomScale" title="Adjust canvas zoom" min="0.05" max="3" step="0.01" value="1" class="w-24">
                         <span id="zoomVal" class="text-[9px] font-bold w-10 text-right">1.0x</span>
                     </div>
                 </div>
@@ -249,17 +284,17 @@
             
             <footer class="bg-black/90 p-4 border-t border-zinc-900 flex justify-between items-center gap-4 z-40">
                 <div class="flex gap-8 text-[9px] uppercase tracking-widest font-bold">
-                    <a href="#blog" class="text-zinc-500 hover:text-white transition-colors cursor-pointer">Production Journal</a>
-                    <a href="#faq" class="text-zinc-500 hover:text-white transition-colors cursor-pointer">Technical Support</a>
+                    <a href="#blog" class="text-zinc-500 hover:text-white transition-colors cursor-pointer" title="Read the methodology">Production Journal</a>
+                    <a href="#faq" class="text-zinc-500 hover:text-white transition-colors cursor-pointer" title="Get help and tips">Technical Support</a>
                 </div>
-                <button id="shareBtn" class="text-white hover:text-red-500 rounded font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2">
+                <button id="shareBtn" title="Share a link to this tool" class="text-white hover:text-red-500 rounded font-black text-[10px] uppercase tracking-widest transition-all flex items-center gap-2">
                     Share Studio <span class="text-[12px] leading-none">↗</span>
                 </button>
             </footer>
         </main>
 
         <!-- RIGHT DRAG HANDLE -->
-        <div id="rightResizer" class="resizer" title="Drag to resize"></div>
+        <div id="rightResizer" class="resizer" title="Drag to resize right sidebar"></div>
 
         <!-- RIGHT RAIL: THE INSPECTOR -->
         <aside id="rightSidebar" class="sidebar flex flex-col h-screen p-5 shrink-0 z-30 overflow-y-auto" style="width: 320px;">
@@ -268,9 +303,9 @@
                 <div class="bg-zinc-900/40 p-4 rounded border border-zinc-800 space-y-3" id="colorUnit">
                     <label class="ui-label text-white block italic">1. Production Ink Color</label>
                     <div class="flex gap-2 items-center">
-                        <input type="color" id="inkColor" value="#000000" class="w-12 h-12 bg-transparent border-0 cursor-pointer shrink-0">
+                        <input type="color" id="inkColor" title="Select ink color visually" value="#000000" class="w-12 h-12 bg-transparent border-0 cursor-pointer shrink-0">
                         <div class="flex-grow flex flex-col">
-                            <input type="text" id="inkHex" placeholder="HEX OR PANTONE (e.g. 032)" class="bg-black border border-zinc-800 p-2 text-[11px] text-white uppercase outline-none font-bold rounded text-center" maxlength="15">
+                            <input type="text" id="inkHex" title="Enter HEX or Pantone code" placeholder="HEX OR PANTONE (e.g. 032)" class="bg-black border border-zinc-800 p-2 text-[11px] text-white uppercase outline-none font-bold rounded text-center" maxlength="15">
                             <div id="pantoneBadge">Pantone Matched</div>
                         </div>
                     </div>
@@ -287,49 +322,6 @@
             <div id="inspectorEmpty" class="h-full flex flex-col items-center justify-center text-center px-6">
                 <p class="text-[9px] text-zinc-600 uppercase font-black tracking-widest">Select Production Layer</p>
                 <p class="text-[8px] text-zinc-700 mt-2 italic text-balance leading-relaxed">Target a layer on the left rail to edit stencil properties.<br><br><b>Ctrl/Cmd + Click</b> to multi-select.</p>
-            </div>
-        </aside>
-
-        <!-- FAR RIGHT DRAG HANDLE -->
-        <div id="farRightResizer" class="resizer" title="Drag to resize"></div>
-
-        <!-- FAR RIGHT RAIL: OUTPUT & ADS -->
-        <aside id="farRightSidebar" class="sidebar flex flex-col h-screen p-5 shrink-0 z-30" style="width: 260px; background-color: #030303;">
-            <header class="mb-8 border-b border-zinc-900 pb-4">
-                <h1 class="text-lg font-black italic tracking-tighter text-white uppercase leading-none">Output Hub</h1>
-                <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] mt-1">Global Actions</p>
-            </header>
-
-            <div class="space-y-4">
-                <button id="downloadBtn" class="w-full py-5 bg-white hover:bg-red-600 text-black hover:text-white transition-all rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl">
-                    Download Master
-                </button>
-                <button id="clearAllBtn" class="w-full py-3 text-[8px] uppercase font-bold border border-zinc-800 text-zinc-600 hover:text-red-500 hover:border-red-900 transition-colors rounded-lg">
-                    Reset Slate
-                </button>
-            </div>
-
-            <!-- AdSense Responsive Container -->
-            <div class="mt-auto pt-4 border-t border-zinc-900">
-                <div class="border border-zinc-800 bg-black/50 rounded-lg flex flex-col items-center justify-center p-4 min-h-[250px] text-center w-full shadow-inner overflow-hidden mb-4">
-                    <span class="text-[8px] text-zinc-600 uppercase font-bold mb-1 tracking-widest">Advertisement</span>
-                    
-                    <!-- Google AdSense Ad Unit -->
-                    <ins class="adsbygoogle"
-                         style="display:block; width:100%;"
-                         data-ad-client="ca-pub-9700081553468351"
-                         data-ad-slot="" 
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                         (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                    
-                </div>
-                
-                <a href="https://buymeacoffee.com/BUILT_BY_LIAM" target="_blank" class="w-full block text-center py-3 bg-zinc-900 hover:bg-yellow-500 text-zinc-400 hover:text-black transition-all rounded-lg font-black text-[10px] uppercase tracking-widest border border-zinc-800">
-                    Support Development
-                </a>
             </div>
         </aside>
     </div>
@@ -448,15 +440,20 @@
 
     <!-- MAIN APPLICATION SCRIPT -->
     <script>
-        // --- PANTONE LOOKUP TABLE (Extended Industrial Apparel Shades) ---
+        // --- PANTONE LOOKUP TABLE (Extended Industrial Apparel Shades & Aliases) ---
         const pantoneTable = {
-            "032": "#EF3340", "186": "#C8102E", "RED": "#C8102E", "BLACK": "#000000",
+            "032": "#EF3340", "032 C": "#EF3340", "186": "#C8102E", "186 C": "#C8102E", "RED": "#C8102E", "BLACK": "#000000",
             "WHITE": "#FFFFFF", "PROCESS BLUE": "#0085CA", "WARM GREY": "#8E8279",
-            "YELLOW 012": "#FFD700", "REFLEX BLUE": "#002094", "GREEN 354": "#00B140",
-            "ORANGE 021": "#FE5000", "COOL GREY 7": "#97999B", "NAVY 282": "#041E42",
+            "YELLOW 012": "#FFD700", "012": "#FFD700", "REFLEX BLUE": "#002094", "GREEN 354": "#00B140", "354": "#00B140",
+            "ORANGE 021": "#FE5000", "021": "#FE5000", "COOL GREY 7": "#97999B", "NAVY 282": "#041E42", "282": "#041E42",
             "RUBINE RED": "#CE0058", "RHODAMINE": "#E10098", "PURPLE": "#C000B5",
-            "VIOLET": "#4D008C", "BLUE 072": "#001489", "GREEN 347": "#009A44",
-            "801": "#00A1DF", "802": "#44D62C", "806": "#FF0092"
+            "VIOLET": "#4D008C", "BLUE 072": "#001489", "072": "#001489", "GREEN 347": "#009A44", "347": "#009A44",
+            "801": "#00A1DF", "802": "#44D62C", "806": "#FF0092",
+            "877": "#8A8D8F", "877 C": "#8A8D8F", "SILVER": "#8A8D8F",
+            "871": "#84754E", "871 C": "#84754E", "GOLD": "#84754E",
+            "CYAN": "#00BCE3", "PROCESS CYAN": "#00BCE3",
+            "MAGENTA": "#EC008C", "PROCESS MAGENTA": "#EC008C",
+            "YELLOW": "#FDE047", "PROCESS YELLOW": "#FDE047"
         };
 
         // --- GLOBAL UTILS ---
@@ -494,10 +491,8 @@
             pantoneBadge: document.getElementById('pantoneBadge'),
             leftSidebar: document.getElementById('leftSidebar'),
             rightSidebar: document.getElementById('rightSidebar'),
-            farRightSidebar: document.getElementById('farRightSidebar'),
             leftResizer: document.getElementById('leftResizer'),
             rightResizer: document.getElementById('rightResizer'),
-            farRightResizer: document.getElementById('farRightResizer'),
             shareBtn: document.getElementById('shareBtn'),
             toastMsg: document.getElementById('toastMsg')
         };
@@ -507,7 +502,6 @@
         // --- SIDEBAR RESIZE LOGIC ---
         let isResizingLeft = false;
         let isResizingRight = false;
-        let isResizingFarRight = false;
 
         el.leftResizer.addEventListener('mousedown', (e) => {
             isResizingLeft = true;
@@ -519,13 +513,8 @@
             document.body.style.cursor = 'col-resize';
         });
 
-        el.farRightResizer.addEventListener('mousedown', (e) => {
-            isResizingFarRight = true;
-            document.body.style.cursor = 'col-resize';
-        });
-
         window.addEventListener('mousemove', (e) => {
-            if (!isResizingLeft && !isResizingRight && !isResizingFarRight) return;
+            if (!isResizingLeft && !isResizingRight) return;
             
             if (isResizingLeft) {
                 let newWidth = e.clientX;
@@ -533,17 +522,10 @@
                 if (newWidth > 600) newWidth = 600;
                 el.leftSidebar.style.width = `${newWidth}px`;
             }
-
-            if (isResizingFarRight) {
-                let newWidth = window.innerWidth - e.clientX;
-                if (newWidth < 200) newWidth = 200;
-                if (newWidth > 600) newWidth = 600;
-                el.farRightSidebar.style.width = `${newWidth}px`;
-            }
             
             if (isResizingRight) {
-                // Right sidebar width is the remaining space between the mouse and the far right sidebar
-                let newWidth = window.innerWidth - e.clientX - el.farRightSidebar.offsetWidth - el.farRightResizer.offsetWidth;
+                // Right sidebar width is the remaining space between the mouse
+                let newWidth = window.innerWidth - e.clientX;
                 if (newWidth < 250) newWidth = 250;
                 if (newWidth > 600) newWidth = 600;
                 el.rightSidebar.style.width = `${newWidth}px`;
@@ -551,10 +533,9 @@
         });
 
         window.addEventListener('mouseup', () => {
-            if (isResizingLeft || isResizingRight || isResizingFarRight) {
+            if (isResizingLeft || isResizingRight) {
                 isResizingLeft = false;
                 isResizingRight = false;
-                isResizingFarRight = false;
                 document.body.style.cursor = 'default';
             }
         });
@@ -744,7 +725,7 @@
                                 <option value="none" ${layer.config.extractMode === 'none' ? 'selected' : ''}>No Extraction (Original Image)</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded border border-white/5 shadow-inner">
+                        <div class="flex items-center justify-between bg-zinc-800/30 p-3 rounded border border-white/5 shadow-inner" title="Force graphic to a solid ink color">
                             <span class="text-[9px] uppercase font-black text-zinc-400 tracking-tighter">Stencil Engine</span>
                             <input type="checkbox" class="inspector-check w-4 h-4 accent-red-600" data-prop="stencil" ${layer.config.stencil ? 'checked':''}>
                         </div>
@@ -856,17 +837,17 @@
         function updateStackUI() {
             // Render in reverse so top layer (end of array) is at top of UI list
             el.stack.innerHTML = [...layers].reverse().map(l => `
-                <div onclick="handleLayerClick(event, '${l.id}', true)" class="layer-item p-3 rounded-xl cursor-pointer group flex items-center gap-3 ${activeLayerIds.has(l.id) ? 'active' : ''}">
+                <div onclick="handleLayerClick(event, '${l.id}', true)" title="Click to select this layer. Cmd/Ctrl+Click for multi-select." class="layer-item p-3 rounded-xl cursor-pointer group flex items-center gap-3 ${activeLayerIds.has(l.id) ? 'active' : ''}">
                     <div class="w-8 h-8 bg-zinc-800 rounded-lg flex flex-col items-center justify-center text-[7px] font-black text-zinc-500 border border-white/5 uppercase italic shrink-0">
                         <span>${l.type === 'image' ? 'IMG' : 'TEXT'}</span>
                     </div>
                     <span class="text-[10px] font-bold truncate flex-grow uppercase text-zinc-400 group-hover:text-white tracking-tighter">${l.name}</span>
                     <button onclick="renameLayerPrompt(event, '${l.id}')" class="text-zinc-600 hover:text-white text-[10px] transition-colors px-1" title="Rename Layer">✎</button>
                     <div class="flex flex-col gap-1 items-center opacity-30 group-hover:opacity-100 transition-opacity px-1 border-x border-white/10">
-                        <button onclick="moveLayer(event, '${l.id}', 1)" class="text-zinc-400 hover:text-white text-[10px] leading-none" title="Move Forward">▲</button>
-                        <button onclick="moveLayer(event, '${l.id}', -1)" class="text-zinc-400 hover:text-white text-[10px] leading-none" title="Move Backward">▼</button>
+                        <button onclick="moveLayer(event, '${l.id}', 1)" class="text-zinc-400 hover:text-white text-[10px] leading-none" title="Move layer forward in stack">▲</button>
+                        <button onclick="moveLayer(event, '${l.id}', -1)" class="text-zinc-400 hover:text-white text-[10px] leading-none" title="Move layer backward in stack">▼</button>
                     </div>
-                    <button onclick="deleteLayer(event, '${l.id}')" class="text-zinc-800 hover:text-red-500 font-black text-sm transition-colors pl-2">×</button>
+                    <button onclick="deleteLayer(event, '${l.id}')" class="text-zinc-800 hover:text-red-500 font-black text-sm transition-colors pl-2" title="Delete this layer">×</button>
                 </div>
             `).join('');
         }
